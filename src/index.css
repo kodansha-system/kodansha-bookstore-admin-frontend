@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-cell {
+  font-size: 16px;
+  text-align: center;
+}

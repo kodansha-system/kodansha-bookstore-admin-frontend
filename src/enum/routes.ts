@@ -1,0 +1,12 @@
+export enum RoutePath {
+  DASHBOARD = "/",
+  QUESTIONS = "/questions",
+  SUBJECTS = "/subjects",
+  TESTS = "/tests",
+  DETAIL_TEST = "/tests/:id",
+  UPDATE_TEST = "tests/:testId/subject/:subjectId/update",
+  CREATE_TEST = "tests/subject/:subjectId/create",
+  SUBJECTS_TESTS = `tests/subjects/:subjectId`,
+  SUBJECT_QUESTIONS = `/questions/subject/:subjectId`,
+  USERS = "/users",
+}
