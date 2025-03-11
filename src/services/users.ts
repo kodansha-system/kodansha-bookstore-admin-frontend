@@ -23,5 +23,5 @@ export const editUser = async (data: IUser) => {
 };
 
 export const unActiveUser = async (id: string) => {
-  return await instance.delete(`${ApiPath.ADMIN}${ApiPath.USERS}/${id}`);
+  return await instance.delete(`${ApiPath.USERS}/${id}`);
 };
