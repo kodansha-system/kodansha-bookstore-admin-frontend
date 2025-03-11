@@ -1,37 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Image, Popover, Table } from "antd";
 import Header from "../../components/Header";
 import AddButton from "../../components/AddButton";
-import { useSubjects, useUnActiveSubject } from "../../hooks/subjects";
+import { useBanners, useUnActiveBanner } from "../../hooks/banners";
 import { useState } from "react";
-import AddSubject from "./Add";
-import EditSubject from "./Edit";
-import { ISubject } from "../../models";
+import { IBanner } from "../../models";
 import { useQueryClient } from "@tanstack/react-query";
+import BannerController from "./components/BannerController";
 
-const Subjects = () => {
-  const { data, isSuccess, isLoading } = useSubjects();
+const Banners = () => {
+  const { data, isSuccess, isLoading } = useBanners();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
-  const unActiveSubject = useUnActiveSubject();
-  const columnsSubject = [
+  const unActiveBanner = useUnActiveBanner();
+  const columnsBanner: any = [
     {
-      title: "Tên môn",
+      title: "Tên banner",
       dataIndex: "name",
       key: "name",
-      width: "30%",
-      render: (text: string) => {
-        return <div>{text}</div>;
-      },
+      width: "20%",
+      ellipsis: true,
+      align: "left",
     },
     {
-      title: "Số tín chỉ",
-      dataIndex: "numberOfCredit",
-      key: "numberOfCredit",
-      width: "10%",
-      render: (text: number) => {
-        return <div>{text}</div>;
-      },
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
+      width: "30%",
+      ellipsis: true,
+      align: "left",
     },
     {
       title: "Ảnh",
@@ -39,16 +37,7 @@ const Subjects = () => {
       key: "image",
       width: "10%",
       render: (text: string) => {
-        return <Image src={text} alt="" width={50} height={50} />;
-      },
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      width: "10%",
-      render: (text: boolean) => {
-        return <div>{text ? "active" : "unactive"}</div>;
+        return <Image src={text} alt="" width={60} height={60} />;
       },
     },
     {
@@ -56,13 +45,13 @@ const Subjects = () => {
       dataIndex: "action",
       key: "action",
       width: "10%",
-      render: (_: unknown, data: ISubject) => {
+      render: (_: unknown, data: IBanner) => {
         return (
           <div className="flex gap-x-2 justify-center">
             <Button
-              onClick={() => handleEditSubject(data._id)}
+              onClick={() => handleEditBanner(data._id)}
               type="primary"
-              className="bg-blue-400 w-[90px] text-white"
+              className="bg-blue-400 text-white"
             >
               Sửa
             </Button>
@@ -71,10 +60,10 @@ const Subjects = () => {
               title={"Xác nhận"}
               content={
                 <>
-                  <div>Bạn muốn ẩn môn học này?</div>
+                  <div>Bạn muốn xóa banner này?</div>
                   <div className="text-right">
                     <button
-                      onClick={() => handleHideSubject(data?._id)}
+                      onClick={() => handleHideBanner(data?._id)}
                       className="bg-blue-500 text-white py-1 px-2 mt-2 rounded-md"
                     >
                       OK
@@ -84,7 +73,7 @@ const Subjects = () => {
               }
             >
               <Button type="dashed" className="bg-red-500 text-white">
-                Unactive
+                Xóa
               </Button>
             </Popover>
           </div>
@@ -93,12 +82,12 @@ const Subjects = () => {
     },
   ];
 
-  const handleAddNewSubject = () => {
+  const handleAddNewBanner = () => {
     setIsOpen(true);
   };
   const queryClient = useQueryClient();
 
-  const handleEditSubject = (id: string) => {
+  const handleEditBanner = (id: string) => {
     setIsOpenEdit(true);
     setId(id);
     queryClient.invalidateQueries({
@@ -106,29 +95,35 @@ const Subjects = () => {
     });
   };
 
-  const handleHideSubject = (id: string) => {
-    unActiveSubject.mutateAsync(id);
+  const handleHideBanner = (id: string) => {
+    unActiveBanner.mutateAsync(id);
   };
 
   return (
     <div>
       <Header
-        element={<AddButton onClick={handleAddNewSubject}>Thêm mới</AddButton>}
+        element={<AddButton onClick={handleAddNewBanner}>Thêm mới</AddButton>}
       >
-        Quản lý môn học
+        Quản lý banners
       </Header>
       <Table
-        columns={columnsSubject}
-        dataSource={isSuccess ? data?.data?.data?.subjects : []}
+        columns={columnsBanner}
+        dataSource={isSuccess ? data?.data?.banners : []}
         loading={isLoading}
         bordered
-        className="w-[95%]"
+        className="w-full"
+        scroll={{ x: 800 }}
       />
 
-      <AddSubject isOpen={isOpen} setIsOpen={setIsOpen} />
-      <EditSubject isOpen={isOpenEdit} setIsOpen={setIsOpenEdit} id={id!} />
+      <BannerController mode="add" isOpen={isOpen} setIsOpen={setIsOpen} />
+      <BannerController
+        mode="edit"
+        id={id}
+        isOpen={isOpenEdit}
+        setIsOpen={setIsOpenEdit}
+      />
     </div>
   );
 };
 
-export default Subjects;
+export default Banners;

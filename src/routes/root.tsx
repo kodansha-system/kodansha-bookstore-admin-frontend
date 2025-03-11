@@ -1,54 +1,61 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { menuItems } from "../constants";
-import { IMenuItems } from "../models";
-import { RoutePath } from "../enum/routes";
+import { Layout, Menu, Breadcrumb, MenuProps } from "antd";
+import { Outlet } from "react-router-dom";
+import IconBanner from "../components/icons/IconBanner";
+import { StyledLayout } from "./styled";
+
+const { Header, Content, Sider } = Layout;
+
+type MenuItem = Required<MenuProps>["items"][number];
+
+function getItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
+
+const items: MenuItem[] = [
+  getItem("Quản lý banner", "1", <IconBanner className="size-[20px]" />),
+];
 
 export default function Root() {
   return (
-    <div className="flex gap-x-5 h-[100vh]">
-      <div className="bg-white dark:bg-greyDarker p-5 border-r border-r-gray-200 dark:border-opacity-10 flex flex-col">
-        <Link
-          to={RoutePath.DASHBOARD}
-          className="font-bold text-3xl inline-block mb-5 text-blue-500"
-        >
-          Ôn thi CTPL - Admin
-        </Link>
-        <ul>
-          {menuItems.map((item, index) => (
-            <MenuItem
-              key={index}
-              url={item.url}
-              icon={item.icon}
-              title={item.title}
-            ></MenuItem>
-          ))}
-        </ul>
-      </div>
-      <div id="detail" className="w-full px-10 py-5">
-        <Outlet />
-      </div>
-    </div>
-  );
-}
-
-function MenuItem({ url = "/", icon, title }: IMenuItems) {
-  return (
-    <li>
-      <NavLink
-        to={url}
-        className={({ isActive, isPending, isTransitioning }) =>
-          [
-            isPending ? "pending" : "",
-            isActive
-              ? "flex items-center text-base gap-x-3 p-3 my-3 rounded-md bg-blue-500 text-white"
-              : "flex items-center text-base gap-x-3 hover:bg-blue-500 hover:bg-opacity-10 p-3 my-3 rounded-md",
-            isTransitioning ? "transitioning" : "",
-          ].join(" ")
-        }
-      >
-        {icon}
-        {title}
-      </NavLink>
-    </li>
+    <StyledLayout>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider collapsible style={{ background: "white" }}>
+          <div className="py-2 font-bold text-[21px] text-center bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 bg-clip-text text-transparent">
+            Shelfly
+          </div>
+          <Menu
+            style={{ background: "white" }}
+            theme="light"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+          />
+        </Sider>
+        <Layout>
+          <Content style={{ margin: "16px" }}>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: "#fff",
+                borderRadius: 8,
+              }}
+            >
+              <Outlet />
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
+    </StyledLayout>
   );
 }

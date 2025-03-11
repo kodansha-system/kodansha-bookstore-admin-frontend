@@ -83,3 +83,11 @@ export interface ITestCreate {
   subject: string;
   _id: string;
 }
+
+export interface IBanner {
+  _id: string;
+  name: string;
+  description: string;
+  image?: File;
+  book_id: string;
+}

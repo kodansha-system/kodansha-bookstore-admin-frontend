@@ -21,5 +21,5 @@ export const editTest = async (data: any) => {
 };
 
 export const unActiveTest = async (id: string) => {
-  return await instance.delete(`${ApiPath.ADMIN}${ApiPath.TEST_SUBJECT}/${id}`);
+  return await instance.delete(`${ApiPath.TEST_SUBJECT}/${id}`);
 };

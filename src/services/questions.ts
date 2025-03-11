@@ -4,7 +4,7 @@ import { IQuestion, IQuestionCreateParams, IQuestionFile } from "../models";
 import instance from "./apiRequest";
 
 export const getListQuestion = async () => {
-  return await instance.get(`${ApiPath.ADMIN}${ApiPath.QUESTIONS}`);
+  return await instance.get(`${ApiPath.QUESTIONS}`);
 };
 
 export const getListQuestionBySubjectId = async (id: string) => {
@@ -43,5 +43,5 @@ export const editQuestion = async (data: IQuestion) => {
 };
 
 export const unActiveQuestion = async (id: string) => {
-  return await instance.delete(`${ApiPath.ADMIN}${ApiPath.QUESTIONS}/${id}`);
+  return await instance.delete(`${ApiPath.QUESTIONS}/${id}`);
 };
