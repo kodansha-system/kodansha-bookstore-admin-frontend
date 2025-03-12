@@ -1,13 +1,15 @@
 import { Form, Input, Modal, Select, Upload, Image } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { useEffect, useState } from "react";
 import {
   useCreateBanner,
   useDetailBanner,
   useEditBanner,
-} from "../../../hooks/banners";
-import { IBanner } from "../../../models";
+} from "@/hooks/banners";
+import { IBanner } from "@/models";
+import { Action } from "@/enum/actions";
+import { FileType, getBase64 } from "@/utils/file";
 
 interface IProps {
   isOpen: boolean;
@@ -15,16 +17,6 @@ interface IProps {
   mode: "add" | "edit";
   id?: string;
 }
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
 
 const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [form] = Form.useForm();
@@ -36,7 +28,7 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [imageError, setImageError] = useState(false); // Thêm state lỗi
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (isOpen && mode === "edit" && data) {
@@ -68,7 +60,7 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       setIsLoading(true);
       const image = fileList[0]?.originFileObj as File | undefined;
 
-      if (mode === "add") {
+      if (mode === Action.ADD) {
         await createBanner.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
         await editBanner.mutateAsync({ ...values, _id: id, image });

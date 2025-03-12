@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { IBanner } from "../models";
+import { IBanner } from "@/models";
 import { notification } from "antd";
 import {
   createBanner,
@@ -8,8 +8,8 @@ import {
   getBanner,
   getListBanner,
   unActiveBanner,
-} from "../services/banners";
-import { QueryKeys } from "../constants";
+} from "@/services/banners";
+import { QueryKeys } from "@/constants";
 
 export const useBanners = () => {
   const query = useQuery({
