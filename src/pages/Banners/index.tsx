@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Image, Popover, Table } from "antd";
-import Header from "../../components/Header";
-import AddButton from "../../components/AddButton";
-import { useBanners, useUnActiveBanner } from "../../hooks/banners";
+import Header from "@/components/Header";
+import AddButton from "@/components/AddButton";
+import { useBanners, useUnActiveBanner } from "@/hooks/banners";
 import { useState } from "react";
-import { IBanner } from "../../models";
+import { IBanner } from "@/models";
 import { useQueryClient } from "@tanstack/react-query";
 import BannerController from "./components/BannerController";
 

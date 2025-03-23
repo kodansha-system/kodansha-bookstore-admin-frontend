@@ -27,6 +27,7 @@ export interface IUser {
   role: string;
   star: number;
   gender: string;
+  image?: File;
   createdAt: string;
   updatedAt: string;
 }

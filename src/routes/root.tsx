@@ -1,9 +1,9 @@
-import { Layout, Menu, Breadcrumb, MenuProps } from "antd";
+import { Layout, Menu, MenuProps } from "antd";
 import { Outlet } from "react-router-dom";
-import IconBanner from "../components/icons/IconBanner";
+import IconBanner from "@/components/icons/IconBanner";
 import { StyledLayout } from "./styled";
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 

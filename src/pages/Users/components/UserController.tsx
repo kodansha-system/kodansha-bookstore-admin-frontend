@@ -2,27 +2,23 @@ import { Form, Input, Modal, Select, Upload, Image } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useEffect, useState } from "react";
-import {
-  useCreateBanner,
-  useDetailBanner,
-  useEditBanner,
-} from "@/hooks/banners";
-import { IBanner } from "@/models";
+import { useCreateUser, useDetailUser, useEditUser } from "@/hooks/users";
+import { IUser } from "@/models";
 import { Action } from "@/enum/actions";
 import { FileType, getBase64 } from "@/utils/file";
 
 interface IProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  mode: "add" | "edit";
+  mode: Action;
   id?: string;
 }
 
-const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
+const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [form] = Form.useForm();
-  const createBanner = useCreateBanner();
-  const editBanner = useEditBanner();
-  const { data } = useDetailBanner(id || "");
+  const createUser = useCreateUser();
+  const editUser = useEditUser();
+  const { data } = useDetailUser(id || "");
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -32,20 +28,20 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
 
   useEffect(() => {
     if (isOpen && mode === "edit" && data) {
-      const banner = data?.data;
+      const user = data?.data;
       form.setFieldsValue({
-        name: banner?.name,
-        status: banner?.status,
-        description: banner?.description,
-        book_id: banner?.book_id,
+        name: user?.name,
+        status: user?.status,
+        description: user?.description,
+        book_id: user?.book_id,
       });
-      if (banner?.image) {
-        setFileList([{ uid: "", name: banner?.name, url: banner?.image }]);
+      if (user?.image) {
+        setFileList([{ uid: "", name: user?.name, url: user?.image }]);
       }
     }
   }, [isOpen, mode, data, form]);
 
-  const handleSubmit = async (values: IBanner) => {
+  const handleSubmit = async (values: IUser) => {
     console.log("click");
     try {
       const data = await form.validateFields();
@@ -61,9 +57,9 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       const image = fileList[0]?.originFileObj as File | undefined;
 
       if (mode === Action.ADD) {
-        await createBanner.mutateAsync({ ...values, image });
+        await createUser.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
-        await editBanner.mutateAsync({ ...values, _id: id, image });
+        await editUser.mutateAsync({ ...values, _id: id, image });
       }
 
       setIsOpen(false);
@@ -90,7 +86,7 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   return (
     <Modal
       open={isOpen}
-      title={mode === "add" ? "Thêm môn học" : "Sửa banner"}
+      title={mode === "add" ? "Thêm môn học" : "Sửa user"}
       okText={mode === "add" ? "Tạo" : "Sửa"}
       cancelText="Hủy"
       onCancel={() => setIsOpen(false)}
@@ -112,9 +108,9 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       maskClosable={false}
     >
       <Form.Item
-        label="Tên banner"
+        label="Tên user"
         name="name"
-        rules={[{ required: true, message: "Tên banner không được để trống" }]}
+        rules={[{ required: true, message: "Tên user không được để trống" }]}
       >
         <Input />
       </Form.Item>
@@ -168,4 +164,4 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   );
 };
 
-export default BannerController;
+export default UserController;
