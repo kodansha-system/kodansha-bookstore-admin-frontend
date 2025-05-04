@@ -7,9 +7,9 @@ import NotFound from "./pages/NotFound";
 import { RoutePath } from "./enum/routes";
 import Users from "./pages/Users";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Banners from "./pages/Banners";
 import Roles from "./pages/Roles";
 import Articles from "./pages/Articles";
+import Reviews from "./pages/Reviews";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -30,10 +30,6 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: RoutePath.BANNERS,
-        element: <Banners />,
-      },
-      {
         path: RoutePath.USERS,
         element: <Users />,
       },
@@ -44,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: RoutePath.ARTICLES,
         element: <Articles />,
+      },
+      {
+        path: RoutePath.REVIEWS,
+        element: <Reviews />,
       },
     ],
   },

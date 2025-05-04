@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Select, Upload, Image } from "antd";
+import { Form, Input, Modal, Upload, Image } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useEffect, useState } from "react";

@@ -25,10 +25,14 @@ function getItem(
 const items: MenuItem[] = [
   getItem("Quản lý người dùng", "/users", <IconUser className="size-[20px]" />),
   getItem("Quản lý vai trò", "/roles", <IconUser className="size-[20px]" />),
-  getItem("Quản lý banner", "/banners", <IconBanner className="size-[20px]" />),
   getItem(
     "Quản lý bài viết",
     "/articles",
+    <IconBanner className="size-[20px]" />
+  ),
+  getItem(
+    "Quản lý đánh giá",
+    "/reviews",
     <IconBanner className="size-[20px]" />
   ),
   getItem(

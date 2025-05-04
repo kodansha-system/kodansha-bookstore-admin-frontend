@@ -114,3 +114,12 @@ export interface IArticle {
   content: string;
   image?: File;
 }
+
+export interface IReview {
+  id: string;
+  _id: string;
+  content: string;
+  rating: number;
+  image?: File;
+  is_verified: boolean;
+}

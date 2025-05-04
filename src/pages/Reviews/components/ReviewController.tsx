@@ -1,17 +1,15 @@
-import { Form, Input, Modal, Select, Upload, Image } from "antd";
+import { Form, Input, Modal, Upload, Image, Rate } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useEffect, useState } from "react";
 import {
-  useCreateBanner,
-  useDetailBanner,
-  useEditBanner,
-} from "@/hooks/banners";
-import { IBanner } from "@/models";
+  useCreateReview,
+  useDetailReview,
+  useEditReview,
+} from "@/hooks/reviews";
+import { IReview } from "@/models";
 import { Action } from "@/enum/actions";
 import { FileType, getBase64 } from "@/utils/file";
-import instance from "@/services/apiRequest";
-import { filterOptions } from "@/utils/common";
 
 interface IProps {
   isOpen: boolean;
@@ -20,39 +18,21 @@ interface IProps {
   id?: string;
 }
 
-const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
+const ReviewController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [form] = Form.useForm();
-  const createBanner = useCreateBanner();
-  const editBanner = useEditBanner();
-  const { data } = useDetailBanner(id || "");
+  const createReview = useCreateReview();
+  const editReview = useEditReview();
+  const { data } = useDetailReview(id || "");
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [books, setBooks] = useState([]);
 
-  const handleGetListBook = async () => {
-    const res = await instance.get("/books", {
-      params: {
-        get_all: true,
-      },
-    });
-    const data = res?.data?.books?.map((item: any) => {
-      return {
-        value: item.id,
-        label: item.name,
-      };
-    });
-    setBooks(data);
-    return data;
-  };
-
-  const handleSubmit = async (values: IBanner) => {
+  const handleSubmit = async (values: IReview) => {
     try {
-      const data = await form.validateFields();
-      console.log("check ", data);
+      await form.validateFields();
       if (fileList.length === 0) {
         setImageError(true);
         return;
@@ -64,9 +44,9 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       const image = fileList[0]?.originFileObj as File | undefined;
 
       if (mode === Action.ADD) {
-        await createBanner.mutateAsync({ ...values, image });
+        await createReview.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
-        await editBanner.mutateAsync({ ...values, id, image });
+        await editReview.mutateAsync({ ...values, id, image });
       }
 
       setIsOpen(false);
@@ -92,27 +72,22 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
 
   useEffect(() => {
     if (isOpen && mode === "edit" && data) {
-      const banner = data?.data;
+      const review = data?.data;
       form.setFieldsValue({
-        name: banner?.name,
-        status: banner?.status,
-        description: banner?.description,
-        book_id: banner?.book_id,
+        content: review?.content,
+        rating: review?.rating,
       });
-      if (banner?.image) {
-        setFileList([{ uid: "", name: banner?.name, url: banner?.image }]);
+      if (review?.image) {
+        setFileList([{ uid: "", name: review?.name, url: review?.image }]);
       }
     }
   }, [isOpen, mode, data, form]);
 
-  useEffect(() => {
-    handleGetListBook();
-  }, []);
   return (
     <Modal
       open={isOpen}
-      title={mode === "add" ? "Thêm banner" : "Sửa banner"}
-      okText={mode === "add" ? "Tạo" : "Sửa"}
+      title={mode === "add" ? "Thêm đánh giá" : "Sửa đánh giá"}
+      okText={mode === "add" ? "Tạo" : "Lưu"}
       cancelText="Hủy"
       onCancel={() => setIsOpen(false)}
       destroyOnClose
@@ -133,16 +108,25 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       maskClosable={false}
     >
       <Form.Item
-        label="Tên banner"
-        name="name"
-        rules={[{ required: true, message: "Tên banner không được để trống" }]}
+        label="Đánh giá"
+        name="rating"
+        rules={[{ required: true, message: "Vui lòng chọn số sao" }]}
       >
-        <Input />
+        <Rate />
       </Form.Item>
-      <Form.Item label="Mô tả" name="description">
-        <Input.TextArea />
+
+      <Form.Item
+        label="Nội dung"
+        name="content"
+        rules={[{ required: true, message: "Vui lòng nhập nội dung đánh giá" }]}
+      >
+        <Input.TextArea
+          rows={5}
+          onChange={(e) => form.setFieldsValue({ content: e.target.value })}
+        />
       </Form.Item>
-      <Form.Item label="Ảnh">
+
+      <Form.Item label="Ảnh minh họa">
         <Upload
           beforeUpload={() => false}
           listType="picture-card"
@@ -175,16 +159,8 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
           />
         )}
       </Form.Item>
-      <Form.Item name="book_id" label="Sách">
-        <Select
-          options={books}
-          allowClear
-          showSearch
-          filterOption={filterOptions}
-        />
-      </Form.Item>
     </Modal>
   );
 };
 
-export default BannerController;
+export default ReviewController;

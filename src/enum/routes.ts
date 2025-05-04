@@ -9,7 +9,7 @@ export enum RoutePath {
   SUBJECTS_TESTS = `tests/subjects/:subjectId`,
   SUBJECT_QUESTIONS = `/questions/subject/:subjectId`,
   USERS = "/users",
-  BANNERS = "/banners",
   ROLES = "/roles",
   ARTICLES = "/articles",
+  REVIEWS = "/reviews",
 }
