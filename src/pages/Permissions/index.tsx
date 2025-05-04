@@ -6,7 +6,7 @@ import { useUsers, useUnActiveUser } from "@/hooks/users";
 import { useState } from "react";
 import { IUser } from "@/models";
 import { useQueryClient } from "@tanstack/react-query";
-import UserController from "./components/UserController";
+import UserController from "./components/PermissionController";
 import { Action } from "@/enum/actions";
 
 const Users = () => {
@@ -15,10 +15,9 @@ const Users = () => {
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
   const unActiveUser = useUnActiveUser();
-
   const columnsUser: any = [
     {
-      title: "Tên user",
+      title: "Tên quyền",
       dataIndex: "name",
       key: "name",
       width: "200px",
@@ -26,21 +25,21 @@ const Users = () => {
       align: "left",
     },
     {
-      title: "Email",
+      title: "Đường dẫn",
       dataIndex: "email",
       key: "email",
       ellipsis: true,
       align: "left",
     },
     {
-      title: "Role",
+      title: "Phương thức",
       dataIndex: ["role", "name"],
       key: "role",
       ellipsis: true,
       align: "left",
     },
     {
-      title: "Ảnh",
+      title: "Module",
       dataIndex: "image",
       key: "image",
       width: "80px",
@@ -61,7 +60,7 @@ const Users = () => {
         return (
           <div className="flex gap-x-2 justify-center">
             <Button
-              onClick={() => handleEditUser(data.id)}
+              onClick={() => handleEditUser(data._id)}
               type="primary"
               className="bg-blue-400 text-white"
             >
@@ -72,10 +71,10 @@ const Users = () => {
               title={"Xác nhận"}
               content={
                 <>
-                  <div>Bạn muốn xóa user này?</div>
+                  <div>Bạn muốn xóa quyền này?</div>
                   <div className="text-right">
                     <button
-                      onClick={() => handleHideUser(data?.id)}
+                      onClick={() => handleHideUser(data?._id)}
                       className="bg-blue-500 text-white py-1 px-2 mt-2 rounded-md"
                     >
                       OK
@@ -102,9 +101,9 @@ const Users = () => {
   const handleEditUser = (id: string) => {
     setIsOpenEdit(true);
     setId(id);
-    // queryClient.invalidateQueries({
-    //   queryKey: ["", id],
-    // });
+    queryClient.invalidateQueries({
+      queryKey: ["subject", id],
+    });
   };
 
   const handleHideUser = (id: string) => {
@@ -116,7 +115,7 @@ const Users = () => {
       <Header
         element={<AddButton onClick={handleAddNewUser}>Thêm mới</AddButton>}
       >
-        Quản lý users
+        Quản lý quyền
       </Header>
       <Table
         columns={columnsUser}
@@ -126,6 +125,7 @@ const Users = () => {
         className="w-full"
         scroll={{ x: 800 }}
       />
+
       <UserController mode={Action.ADD} isOpen={isOpen} setIsOpen={setIsOpen} />
       <UserController
         mode={Action.EDIT}

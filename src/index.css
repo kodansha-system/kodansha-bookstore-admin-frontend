@@ -2,8 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "path-to/_variables.scss";
+@import "path-to/_keyframes-animations.scss";
+
+/* Basic editor styles */
+.ProseMirror {
+  padding: 10px;
+  min-height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.ProseMirror:focus {
+  outline: none;
+  border-color: #1890ff;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+/* Style for images */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Style for font family */
+.ProseMirror .font-family-Arial {
+  font-family: Arial, sans-serif;
+}
+
+.ProseMirror .font-family-Times {
+  font-family: "Times New Roman", serif;
+}
+
+.ProseMirror .font-family-Courier {
+  font-family: "Courier New", monospace;
+}
+
+.ProseMirror .font-family-Georgia {
+  font-family: Georgia, serif;
+}
+
+/* Toolbar styles */
+.tiptap-toolbar {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-toolbar button {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.tiptap-toolbar button:hover {
+  background: #f0f0f0;
+}
+
+.tiptap-toolbar button.active {
+  background: #e0e0e0;
+}
+
 .ant-table-wrapper .ant-table-thead > tr > th,
 .ant-table-cell {
-  font-size: 16px;
   text-align: center;
+}
+
+.ant-form-item:not(.ant-form-item-horizontal) .ant-form-item-label > label {
+  font-weight: 500;
+  font-size: 15px;
 }

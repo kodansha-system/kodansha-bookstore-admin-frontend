@@ -6,7 +6,6 @@ import { useCreateUser, useDetailUser, useEditUser } from "@/hooks/users";
 import { IUser } from "@/models";
 import { Action } from "@/enum/actions";
 import { FileType, getBase64 } from "@/utils/file";
-import instance from "@/services/apiRequest";
 
 interface IProps {
   isOpen: boolean;
@@ -26,8 +25,6 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [shopOptions, setShopOptions] = useState([]);
-  const [roleOptions, setRoleOptions] = useState([]);
 
   useEffect(() => {
     if (isOpen && mode === "edit" && data) {
@@ -35,8 +32,8 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       form.setFieldsValue({
         name: user?.name,
         status: user?.status,
-        password: user?.password,
-        shop_id: user?.shop_id,
+        description: user?.description,
+        book_id: user?.book_id,
       });
       if (user?.image) {
         setFileList([{ uid: "", name: user?.name, url: user?.image }]);
@@ -45,15 +42,26 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   }, [isOpen, mode, data, form]);
 
   const handleSubmit = async (values: IUser) => {
+    console.log("click");
     try {
-      await form.validateFields();
+      const data = await form.validateFields();
+      console.log("check ", data);
+      if (fileList.length === 0) {
+        setImageError(true);
+        return;
+      } else {
+        setImageError(false);
+      }
+
       setIsLoading(true);
       const image = fileList[0]?.originFileObj as File | undefined;
+
       if (mode === Action.ADD) {
         await createUser.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
-        await editUser.mutateAsync({ ...values, id: id, image });
+        await editUser.mutateAsync({ ...values, _id: id, image });
       }
+
       setIsOpen(false);
     } catch (e) {
       console.log(e);
@@ -72,36 +80,8 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
-    setImageError(newFileList.length === 0);
+    setImageError(newFileList.length === 0); // Cập nhật lỗi khi chọn ảnh
   };
-
-  const handleGetListShop = async () => {
-    const res = await instance.get("/shops");
-    setShopOptions(
-      res?.data?.shops?.map((item: any) => {
-        return {
-          value: item?.id,
-          label: item?.address,
-        };
-      })
-    );
-  };
-
-  const handleGetListRole = async () => {
-    const res = await instance.get("/roles");
-    const roles = res?.data?.roles?.map(
-      (item: { id: string; name: string }) => ({
-        value: item.id,
-        label: item.name,
-      })
-    );
-    setRoleOptions(roles);
-  };
-
-  useEffect(() => {
-    handleGetListShop();
-    handleGetListRole();
-  }, []);
 
   return (
     <Modal
@@ -128,46 +108,16 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       maskClosable={false}
     >
       <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: "Email không được để trống" }]}
+        label="Tên user"
+        name="name"
+        rules={[{ required: true, message: "Tên user không được để trống" }]}
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Họ và tên" name="name">
-        <Input />
+      <Form.Item label="Mô tả" name="description">
+        <Input.TextArea />
       </Form.Item>
-      <Form.Item
-        label="Mật khẩu"
-        name="password"
-        rules={[{ required: true, message: "Mật khẩu không được để trống" }]}
-      >
-        <Input type="password" />
-      </Form.Item>
-      <Form.Item
-        label="Nhập lại mật khẩu"
-        name="confirm_password"
-        rules={[
-          { required: true, message: "Xác nhận mật khẩu không được để trống" },
-        ]}
-      >
-        <Input type="confirm_password" />
-      </Form.Item>
-      <Form.Item
-        name="shop_id"
-        label="Cửa hàng"
-        rules={[{ required: true, message: "Cửa hàng không được để trống" }]}
-      >
-        <Select options={shopOptions} />
-      </Form.Item>
-      <Form.Item
-        name="role"
-        label="Vai trò"
-        rules={[{ required: true, message: "Chức vụ không được để trống" }]}
-      >
-        <Select options={roleOptions} />
-      </Form.Item>
-      <Form.Item label="Ảnh đại diện">
+      <Form.Item label="Ảnh">
         <Upload
           beforeUpload={() => false}
           listType="picture-card"
@@ -199,6 +149,16 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
             src={previewImage}
           />
         )}
+      </Form.Item>
+      <Form.Item name="book_id" label="Sách">
+        <Select
+          options={[
+            {
+              label: "Tôi thấy hoa vàng trên cỏ xanh",
+              value: "67cd415d749edb22c292a757",
+            },
+          ]}
+        />
       </Form.Item>
     </Modal>
   );

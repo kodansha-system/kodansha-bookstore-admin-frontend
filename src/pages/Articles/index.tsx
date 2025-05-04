@@ -1,36 +1,36 @@
 import { Image, Popover } from "antd";
 import Header from "@/components/Header";
 import AddButton from "@/components/AddButton";
-import { useBanners, useUnActiveBanner } from "@/hooks/banners";
 import { useState } from "react";
-import { IBanner } from "@/models";
+import { IArticle } from "@/models";
 import { useQueryClient } from "@tanstack/react-query";
-import BannerController from "./components/BannerController";
 import DeleteButton from "@/components/DeleteButton";
 import EditButton from "@/components/EditButton";
 import TableCommon from "@/components/TableCommon";
+import { useArticles, useUnActiveArticle } from "@/hooks/articles";
+import ArticleController from "./components/ArticleController";
 
-const Banners = () => {
-  const { data, isSuccess, isLoading } = useBanners();
+const Articles = () => {
+  const { data, isSuccess, isLoading } = useArticles();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
-  const unActiveBanner = useUnActiveBanner();
+  const unActiveArticle = useUnActiveArticle();
   const queryClient = useQueryClient();
 
-  const columnsBanner: any = [
+  const columnsArticle: any = [
     {
-      title: "Tên banner",
-      dataIndex: "name",
-      key: "name",
+      title: "Tên article",
+      dataIndex: "title",
+      key: "title",
       width: "20%",
       ellipsis: true,
       align: "left",
     },
     {
       title: "Mô tả",
-      dataIndex: "description",
-      key: "description",
+      dataIndex: "content",
+      key: "content",
       width: "30%",
       ellipsis: true,
       align: "left",
@@ -49,19 +49,20 @@ const Banners = () => {
       dataIndex: "action",
       key: "action",
       width: "20%",
-      render: (_: unknown, data: IBanner) => {
+      render: (_: unknown, data: IArticle) => {
+        console.log(data.id);
         return (
           <div className="flex gap-x-3 justify-center">
-            <EditButton onClick={() => handleEditBanner(data?.id)} />
+            <EditButton onClick={() => handleEditArticle(data?.id)} />
             <Popover
               placement="top"
               title={"Xác nhận"}
               content={
                 <>
-                  <div>Bạn muốn xóa banner này?</div>
+                  <div>Bạn muốn xóa article này?</div>
                   <div className="text-right">
                     <button
-                      onClick={() => handleHideBanner(data?.id)}
+                      onClick={() => handleHideArticle(data?.id)}
                       className="bg-blue-500 text-white py-1 px-2 mt-2 rounded-md"
                     >
                       OK
@@ -78,11 +79,11 @@ const Banners = () => {
     },
   ];
 
-  const handleAddNewBanner = () => {
+  const handleAddNewArticle = () => {
     setIsOpen(true);
   };
 
-  const handleEditBanner = (id: string) => {
+  const handleEditArticle = (id: string) => {
     setIsOpenEdit(true);
     setId(id);
     queryClient.invalidateQueries({
@@ -90,28 +91,28 @@ const Banners = () => {
     });
   };
 
-  const handleHideBanner = (id: string) => {
-    unActiveBanner.mutateAsync(id);
+  const handleHideArticle = (id: string) => {
+    unActiveArticle.mutateAsync(id);
   };
 
   return (
     <div>
       <Header
-        element={<AddButton onClick={handleAddNewBanner}>Thêm mới</AddButton>}
+        element={<AddButton onClick={handleAddNewArticle}>Thêm mới</AddButton>}
       >
-        Quản lý banners
+        Quản lý articles
       </Header>
       <TableCommon
-        columns={columnsBanner}
-        dataSource={isSuccess ? data?.data?.banners : []}
+        columns={columnsArticle}
+        dataSource={isSuccess ? data?.data?.articles : []}
         loading={isLoading}
         pagination={{
           total: data?.data?.meta?.totalItems,
         }}
       />
 
-      <BannerController mode="add" isOpen={isOpen} setIsOpen={setIsOpen} />
-      <BannerController
+      <ArticleController mode="add" isOpen={isOpen} setIsOpen={setIsOpen} />
+      <ArticleController
         mode="edit"
         id={id}
         isOpen={isOpenEdit}
@@ -121,4 +122,4 @@ const Banners = () => {
   );
 };
 
-export default Banners;
+export default Articles;
