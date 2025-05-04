@@ -2,8 +2,10 @@ import { ApiPath } from "../enum/api";
 import { IArticle } from "../models";
 import instance from "./apiRequest";
 
-export const getListArticle = async () => {
-  return await instance.get(`${ApiPath.ARTICLES}`);
+export const getListArticle = async (params: any) => {
+  return await instance.get(`/articles`, {
+    params,
+  });
 };
 
 export const getArticle = async (id: string) => {

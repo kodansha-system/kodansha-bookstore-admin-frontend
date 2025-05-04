@@ -1,4 +1,4 @@
-import { Image, Popover } from "antd";
+import { Image, Input, Popover } from "antd";
 import Header from "@/components/Header";
 import AddButton from "@/components/AddButton";
 import { useState } from "react";
@@ -11,7 +11,12 @@ import { useArticles, useUnActiveArticle } from "@/hooks/articles";
 import ArticleController from "./components/ArticleController";
 
 const Articles = () => {
-  const { data, isSuccess, isLoading } = useArticles();
+  const [filter, setFilter] = useState({
+    current: 1,
+    pageSize: 10,
+    keyword: "",
+  });
+  const { data, isSuccess, isLoading } = useArticles(filter);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
@@ -50,7 +55,6 @@ const Articles = () => {
       key: "action",
       width: "20%",
       render: (_: unknown, data: IArticle) => {
-        console.log(data.id);
         return (
           <div className="flex gap-x-3 justify-center">
             <EditButton onClick={() => handleEditArticle(data?.id)} />
@@ -102,12 +106,32 @@ const Articles = () => {
       >
         Quản lý articles
       </Header>
+
+      <Input.Search
+        placeholder="Tìm kiếm article"
+        allowClear
+        onSearch={(value) => {
+          setFilter((prev) => ({
+            ...prev,
+            keyword: value,
+            current: 1, // reset về trang 1 khi search
+          }));
+        }}
+        style={{ width: 300 }}
+        className="mb-3"
+      />
+
       <TableCommon
         columns={columnsArticle}
         dataSource={isSuccess ? data?.data?.articles : []}
         loading={isLoading}
         pagination={{
           total: data?.data?.meta?.totalItems,
+          current: filter.current,
+          pageSize: filter.pageSize,
+          onChange: (page, pageSize) => {
+            setFilter({ ...filter, current: page, pageSize });
+          },
         }}
       />
 

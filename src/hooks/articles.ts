@@ -12,12 +12,11 @@ import {
   unActiveArticle,
 } from "@/services/articles";
 
-export const useArticles = () => {
-  const query = useQuery({
-    queryKey: [QueryKeys.ARTICLES],
-    queryFn: getListArticle,
+export const useArticles = (filter: any) => {
+  return useQuery({
+    queryKey: [QueryKeys.ARTICLES, filter],
+    queryFn: () => getListArticle(filter),
   });
-  return query;
 };
 
 export const useDetailArticle = (id: string) => {
