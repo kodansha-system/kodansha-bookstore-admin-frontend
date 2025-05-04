@@ -2,58 +2,55 @@ import { Form, Input, Modal, Select, Upload, Image } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import { useEffect, useState } from "react";
-import { useCreateUser, useDetailUser, useEditUser } from "@/hooks/users";
-import { IUser } from "@/models";
+import {
+  useCreateArticle,
+  useDetailArticle,
+  useEditArticle,
+} from "@/hooks/articles";
+import { IArticle } from "@/models";
 import { Action } from "@/enum/actions";
 import { FileType, getBase64 } from "@/utils/file";
-import instance from "@/services/apiRequest";
+import TiptapEditor from "./TiptapEditor";
 
 interface IProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  mode: Action;
+  mode: "add" | "edit";
   id?: string;
 }
 
-const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
+const ArticleController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [form] = Form.useForm();
-  const createUser = useCreateUser();
-  const editUser = useEditUser();
-  const { data } = useDetailUser(id || "");
+  const createArticle = useCreateArticle();
+  const editArticle = useEditArticle();
+  const { data } = useDetailArticle(id || "");
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [shopOptions, setShopOptions] = useState([]);
-  const [roleOptions, setRoleOptions] = useState([]);
 
-  useEffect(() => {
-    if (isOpen && mode === "edit" && data) {
-      const user = data?.data;
-      form.setFieldsValue({
-        name: user?.name,
-        status: user?.status,
-        password: user?.password,
-        shop_id: user?.shop_id,
-      });
-      if (user?.image) {
-        setFileList([{ uid: "", name: user?.name, url: user?.image }]);
-      }
-    }
-  }, [isOpen, mode, data, form]);
-
-  const handleSubmit = async (values: IUser) => {
+  const handleSubmit = async (values: IArticle) => {
     try {
-      await form.validateFields();
+      const data = await form.validateFields();
+      console.log("Form Data: ", data);
+      if (fileList.length === 0) {
+        setImageError(true);
+        return;
+      } else {
+        setImageError(false);
+      }
+
       setIsLoading(true);
       const image = fileList[0]?.originFileObj as File | undefined;
+
       if (mode === Action.ADD) {
-        await createUser.mutateAsync({ ...values, image });
+        await createArticle.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
-        await editUser.mutateAsync({ ...values, id: id, image });
+        await editArticle.mutateAsync({ ...values, id, image });
       }
+
       setIsOpen(false);
     } catch (e) {
       console.log(e);
@@ -75,38 +72,24 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
     setImageError(newFileList.length === 0);
   };
 
-  const handleGetListShop = async () => {
-    const res = await instance.get("/shops");
-    setShopOptions(
-      res?.data?.shops?.map((item: any) => {
-        return {
-          value: item?.id,
-          label: item?.address,
-        };
-      })
-    );
-  };
-
-  const handleGetListRole = async () => {
-    const res = await instance.get("/roles");
-    const roles = res?.data?.roles?.map(
-      (item: { id: string; name: string }) => ({
-        value: item.id,
-        label: item.name,
-      })
-    );
-    setRoleOptions(roles);
-  };
-
   useEffect(() => {
-    handleGetListShop();
-    handleGetListRole();
-  }, []);
+    if (isOpen && mode === "edit" && data) {
+      const article = data?.data;
+      form.setFieldsValue({
+        title: article?.title,
+        status: article?.status,
+        content: article?.content,
+      });
+      if (article?.image) {
+        setFileList([{ uid: "", name: article?.name, url: article?.image }]);
+      }
+    }
+  }, [isOpen, mode, data, form]);
 
   return (
     <Modal
       open={isOpen}
-      title={mode === "add" ? "Thêm môn học" : "Sửa user"}
+      title={mode === "add" ? "Thêm bài viết" : "Sửa bài viết"}
       okText={mode === "add" ? "Tạo" : "Sửa"}
       cancelText="Hủy"
       onCancel={() => setIsOpen(false)}
@@ -128,46 +111,25 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       maskClosable={false}
     >
       <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: "Email không được để trống" }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item label="Họ và tên" name="name">
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Mật khẩu"
-        name="password"
-        rules={[{ required: true, message: "Mật khẩu không được để trống" }]}
-      >
-        <Input type="password" />
-      </Form.Item>
-      <Form.Item
-        label="Nhập lại mật khẩu"
-        name="confirm_password"
+        label="Tiêu đề bài viết"
+        name="title"
         rules={[
-          { required: true, message: "Xác nhận mật khẩu không được để trống" },
+          { required: true, message: "Tiêu đề bài viết không được để trống" },
         ]}
       >
-        <Input type="confirm_password" />
+        <Input />
       </Form.Item>
       <Form.Item
-        name="shop_id"
-        label="Cửa hàng"
-        rules={[{ required: true, message: "Cửa hàng không được để trống" }]}
+        label="Nội dung bài viết"
+        name="content"
+        rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết" }]}
       >
-        <Select options={shopOptions} />
+        <TiptapEditor
+          value={form.getFieldValue("content")}
+          onChange={(content) => form.setFieldsValue({ content })}
+        />
       </Form.Item>
-      <Form.Item
-        name="role"
-        label="Vai trò"
-        rules={[{ required: true, message: "Chức vụ không được để trống" }]}
-      >
-        <Select options={roleOptions} />
-      </Form.Item>
-      <Form.Item label="Ảnh đại diện">
+      <Form.Item label="Ảnh bài viết">
         <Upload
           beforeUpload={() => false}
           listType="picture-card"
@@ -204,4 +166,4 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   );
 };
 
-export default UserController;
+export default ArticleController;

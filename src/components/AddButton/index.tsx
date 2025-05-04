@@ -8,7 +8,7 @@ const AddButton = ({
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer bg-green-600 text-white rounded-md py-2 px-5 hover:bg-opacity-80"
+      className="cursor-pointer bg-blue-600 text-white rounded-md py-2 px-5 hover:bg-opacity-80"
     >
       {children}
     </div>

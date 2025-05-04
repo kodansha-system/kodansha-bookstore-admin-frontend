@@ -10,6 +10,8 @@ import {
 import { IBanner } from "@/models";
 import { Action } from "@/enum/actions";
 import { FileType, getBase64 } from "@/utils/file";
+import instance from "@/services/apiRequest";
+import { filterOptions } from "@/utils/common";
 
 interface IProps {
   isOpen: boolean;
@@ -29,24 +31,25 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [books, setBooks] = useState([]);
 
-  useEffect(() => {
-    if (isOpen && mode === "edit" && data) {
-      const banner = data?.data;
-      form.setFieldsValue({
-        name: banner?.name,
-        status: banner?.status,
-        description: banner?.description,
-        book_id: banner?.book_id,
-      });
-      if (banner?.image) {
-        setFileList([{ uid: "", name: banner?.name, url: banner?.image }]);
-      }
-    }
-  }, [isOpen, mode, data, form]);
+  const handleGetListBook = async () => {
+    const res = await instance.get("/books", {
+      params: {
+        get_all: true,
+      },
+    });
+    const data = res?.data?.books?.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
+    setBooks(data);
+    return data;
+  };
 
   const handleSubmit = async (values: IBanner) => {
-    console.log("click");
     try {
       const data = await form.validateFields();
       console.log("check ", data);
@@ -63,7 +66,7 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       if (mode === Action.ADD) {
         await createBanner.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
-        await editBanner.mutateAsync({ ...values, _id: id, image });
+        await editBanner.mutateAsync({ ...values, id, image });
       }
 
       setIsOpen(false);
@@ -84,13 +87,31 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
-    setImageError(newFileList.length === 0); // Cập nhật lỗi khi chọn ảnh
+    setImageError(newFileList.length === 0);
   };
 
+  useEffect(() => {
+    if (isOpen && mode === "edit" && data) {
+      const banner = data?.data;
+      form.setFieldsValue({
+        name: banner?.name,
+        status: banner?.status,
+        description: banner?.description,
+        book_id: banner?.book_id,
+      });
+      if (banner?.image) {
+        setFileList([{ uid: "", name: banner?.name, url: banner?.image }]);
+      }
+    }
+  }, [isOpen, mode, data, form]);
+
+  useEffect(() => {
+    handleGetListBook();
+  }, []);
   return (
     <Modal
       open={isOpen}
-      title={mode === "add" ? "Thêm môn học" : "Sửa banner"}
+      title={mode === "add" ? "Thêm banner" : "Sửa banner"}
       okText={mode === "add" ? "Tạo" : "Sửa"}
       cancelText="Hủy"
       onCancel={() => setIsOpen(false)}
@@ -156,12 +177,10 @@ const BannerController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       </Form.Item>
       <Form.Item name="book_id" label="Sách">
         <Select
-          options={[
-            {
-              label: "Tôi thấy hoa vàng trên cỏ xanh",
-              value: "67cd415d749edb22c292a757",
-            },
-          ]}
+          options={books}
+          allowClear
+          showSearch
+          filterOption={filterOptions}
         />
       </Form.Item>
     </Modal>

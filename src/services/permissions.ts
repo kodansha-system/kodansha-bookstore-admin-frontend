@@ -1,22 +1,16 @@
 import { ApiPath } from "../enum/api";
-import { IBanner } from "../models";
+import { IPermission } from "../models";
 import instance from "./apiRequest";
 
-export const getListBanner = async () => {
+export const getListPermission = async () => {
   return await instance.get(`${ApiPath.BANNERS}`);
 };
 
-export const getBanner = async (id: string) => {
+export const getPermission = async (id: string) => {
   return await instance.get(`${ApiPath.BANNERS}/${id}`);
 };
 
-export const createBanner = async (data: IBanner) => {
-  const formData = new FormData();
-  formData.append("image", data.image as File);
-  formData.append("name", data.name);
-  formData.append("description", data.description);
-  formData.append("book_id", data.book_id);
-
+export const createPermission = async (data: IPermission) => {
   const response = await instance.post(
     `${import.meta.env.VITE_BACKEND_URL}${ApiPath.BANNERS}`,
     data,
@@ -29,9 +23,9 @@ export const createBanner = async (data: IBanner) => {
   return response.data;
 };
 
-export const editBanner = async (data: IBanner) => {
+export const editPermission = async (data: IPermission) => {
   const response = await instance.patch(
-    `${import.meta.env.VITE_BACKEND_URL}${ApiPath.BANNERS}/${data.id}`,
+    `${import.meta.env.VITE_BACKEND_URL}${ApiPath.BANNERS}/${data._id}`,
     data,
     {
       headers: {
@@ -42,6 +36,6 @@ export const editBanner = async (data: IBanner) => {
   return response.data;
 };
 
-export const unActiveBanner = async (id: string) => {
+export const unActivePermission = async (id: string) => {
   return await instance.delete(`${ApiPath.BANNERS}/${id}`);
 };

@@ -1,24 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Image, Popover, Table } from "antd";
+import { Button, Popover, Table } from "antd";
 import Header from "@/components/Header";
 import AddButton from "@/components/AddButton";
-import { useUsers, useUnActiveUser } from "@/hooks/users";
 import { useState } from "react";
-import { IUser } from "@/models";
+import { IRole } from "@/models";
 import { useQueryClient } from "@tanstack/react-query";
-import UserController from "./components/UserController";
 import { Action } from "@/enum/actions";
+import RoleController from "./components/RoleController";
+import { useRoles, useUnActiveRole } from "@/hooks/roles";
 
-const Users = () => {
-  const { data, isSuccess, isLoading } = useUsers();
+const Roles = () => {
+  const { data, isSuccess, isLoading } = useRoles();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
-  const unActiveUser = useUnActiveUser();
-
-  const columnsUser: any = [
+  const unActiveRole = useUnActiveRole();
+  const columnsRole: any = [
     {
-      title: "Tên user",
+      title: "Tên role",
       dataIndex: "name",
       key: "name",
       width: "200px",
@@ -26,42 +25,29 @@ const Users = () => {
       align: "left",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
       ellipsis: true,
       align: "left",
     },
     {
-      title: "Role",
-      dataIndex: ["role", "name"],
-      key: "role",
+      title: "Mã",
+      dataIndex: "code",
+      key: "code",
       ellipsis: true,
       align: "left",
-    },
-    {
-      title: "Ảnh",
-      dataIndex: "image",
-      key: "image",
-      width: "80px",
-      render: (text: string) => {
-        return (
-          <div className="flex justify-center">
-            {text && <Image src={text} alt="" width={60} height={60} />}
-          </div>
-        );
-      },
     },
     {
       title: "Hành động",
       dataIndex: "action",
       key: "action",
       width: "150px",
-      render: (_: unknown, data: IUser) => {
+      render: (_: unknown, data: IRole) => {
         return (
           <div className="flex gap-x-2 justify-center">
             <Button
-              onClick={() => handleEditUser(data.id)}
+              onClick={() => handleEditRole(data._id)}
               type="primary"
               className="bg-blue-400 text-white"
             >
@@ -72,10 +58,10 @@ const Users = () => {
               title={"Xác nhận"}
               content={
                 <>
-                  <div>Bạn muốn xóa user này?</div>
+                  <div>Bạn muốn xóa role này?</div>
                   <div className="text-right">
                     <button
-                      onClick={() => handleHideUser(data?.id)}
+                      onClick={() => handleHideRole(data?._id)}
                       className="bg-blue-500 text-white py-1 px-2 mt-2 rounded-md"
                     >
                       OK
@@ -94,40 +80,41 @@ const Users = () => {
     },
   ];
 
-  const handleAddNewUser = () => {
+  const handleAddNewRole = () => {
     setIsOpen(true);
   };
   const queryClient = useQueryClient();
 
-  const handleEditUser = (id: string) => {
+  const handleEditRole = (id: string) => {
     setIsOpenEdit(true);
     setId(id);
-    // queryClient.invalidateQueries({
-    //   queryKey: ["", id],
-    // });
+    queryClient.invalidateQueries({
+      queryKey: ["subject", id],
+    });
   };
 
-  const handleHideUser = (id: string) => {
-    unActiveUser.mutateAsync(id);
+  const handleHideRole = (id: string) => {
+    unActiveRole.mutateAsync(id);
   };
 
   return (
     <div>
       <Header
-        element={<AddButton onClick={handleAddNewUser}>Thêm mới</AddButton>}
+        element={<AddButton onClick={handleAddNewRole}>Thêm mới</AddButton>}
       >
-        Quản lý users
+        Quản lý roles
       </Header>
       <Table
-        columns={columnsUser}
-        dataSource={isSuccess ? data?.data?.users : []}
+        columns={columnsRole}
+        dataSource={isSuccess ? data?.data?.roles : []}
         loading={isLoading}
         bordered
         className="w-full"
         scroll={{ x: 800 }}
       />
-      <UserController mode={Action.ADD} isOpen={isOpen} setIsOpen={setIsOpen} />
-      <UserController
+
+      <RoleController mode={Action.ADD} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <RoleController
         mode={Action.EDIT}
         id={id}
         isOpen={isOpenEdit}
@@ -137,4 +124,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Roles;

@@ -6,4 +6,6 @@ export enum ApiPath {
   TEST_SUBJECT = "/tests/subject",
   TEST = "/tests",
   BANNERS = "/banners",
+  ROLES = "/roles",
+  ARTICLES = "/articles",
 }

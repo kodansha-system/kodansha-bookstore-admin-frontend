@@ -86,9 +86,31 @@ export interface ITestCreate {
 }
 
 export interface IBanner {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   image?: File;
   book_id: string;
+}
+
+export interface IRole {
+  _id: string;
+  name: string;
+  permissions: string[];
+}
+
+export interface IPermission {
+  _id: string;
+  name: string;
+  api_path: string;
+  method: string;
+  module: string;
+}
+
+export interface IArticle {
+  id: string;
+  _id: string;
+  title: string;
+  content: string;
+  image?: File;
 }

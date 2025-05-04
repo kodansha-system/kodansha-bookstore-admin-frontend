@@ -10,4 +10,6 @@ export enum RoutePath {
   SUBJECT_QUESTIONS = `/questions/subject/:subjectId`,
   USERS = "/users",
   BANNERS = "/banners",
+  ROLES = "/roles",
+  ARTICLES = "/articles",
 }

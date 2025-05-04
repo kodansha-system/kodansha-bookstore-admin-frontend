@@ -11,7 +11,7 @@ export const StyledLayout: any = styled.div`
     }
     .ant-menu-item-selected {
       color: #fff !important;
-      background-color: rgb(30, 144, 255);
+      background-color: #2563eb;
     }
     .ant-menu-submenu-title {
       height: 50px;
@@ -31,7 +31,7 @@ export const StyledLayout: any = styled.div`
   }
 
   .ant-menu-item {
-    color: #fff !important;
+    color: black !important;
     font-weight: bold;
     border-bottom: 1px solid #fff;
     border-radius: 0;
@@ -44,7 +44,7 @@ export const StyledLayout: any = styled.div`
   }
 
   .ant-menu-title-content {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 23.17px;
     font-weight: 500;
   }
@@ -67,7 +67,7 @@ export const StyledLayout: any = styled.div`
   }
 
   .ant-layout .ant-layout-sider-trigger {
-    background-color: rgb(30, 144, 255);
+    background-color: #2563eb;
     font-weight: bold;
     opacity: 1;
   }

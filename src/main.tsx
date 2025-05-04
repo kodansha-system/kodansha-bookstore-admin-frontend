@@ -8,6 +8,8 @@ import { RoutePath } from "./enum/routes";
 import Users from "./pages/Users";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Banners from "./pages/Banners";
+import Roles from "./pages/Roles";
+import Articles from "./pages/Articles";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -34,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: RoutePath.USERS,
         element: <Users />,
+      },
+      {
+        path: RoutePath.ROLES,
+        element: <Roles />,
+      },
+      {
+        path: RoutePath.ARTICLES,
+        element: <Articles />,
       },
     ],
   },

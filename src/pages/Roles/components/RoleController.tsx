@@ -15,7 +15,7 @@ interface IProps {
   id?: string;
 }
 
-const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
+const RoleController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [form] = Form.useForm();
   const createUser = useCreateUser();
   const editUser = useEditUser();
@@ -26,34 +26,26 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [shopOptions, setShopOptions] = useState([]);
-  const [roleOptions, setRoleOptions] = useState([]);
-
-  useEffect(() => {
-    if (isOpen && mode === "edit" && data) {
-      const user = data?.data;
-      form.setFieldsValue({
-        name: user?.name,
-        status: user?.status,
-        password: user?.password,
-        shop_id: user?.shop_id,
-      });
-      if (user?.image) {
-        setFileList([{ uid: "", name: user?.name, url: user?.image }]);
-      }
-    }
-  }, [isOpen, mode, data, form]);
 
   const handleSubmit = async (values: IUser) => {
     try {
       await form.validateFields();
+      if (fileList.length === 0) {
+        setImageError(true);
+        return;
+      } else {
+        setImageError(false);
+      }
+
       setIsLoading(true);
       const image = fileList[0]?.originFileObj as File | undefined;
+
       if (mode === Action.ADD) {
         await createUser.mutateAsync({ ...values, image });
       } else if (mode === "edit" && id) {
-        await editUser.mutateAsync({ ...values, id: id, image });
+        await editUser.mutateAsync({ ...values, _id: id, image });
       }
+
       setIsOpen(false);
     } catch (e) {
       console.log(e);
@@ -77,31 +69,27 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
 
   const handleGetListShop = async () => {
     const res = await instance.get("/shops");
-    setShopOptions(
-      res?.data?.shops?.map((item: any) => {
-        return {
-          value: item?.id,
-          label: item?.address,
-        };
-      })
-    );
-  };
-
-  const handleGetListRole = async () => {
-    const res = await instance.get("/roles");
-    const roles = res?.data?.roles?.map(
-      (item: { id: string; name: string }) => ({
-        value: item.id,
-        label: item.name,
-      })
-    );
-    setRoleOptions(roles);
+    console.log(res);
   };
 
   useEffect(() => {
     handleGetListShop();
-    handleGetListRole();
   }, []);
+
+  useEffect(() => {
+    if (isOpen && mode === "edit" && data) {
+      const user = data?.data;
+      form.setFieldsValue({
+        name: user?.name,
+        status: user?.status,
+        description: user?.description,
+        book_id: user?.book_id,
+      });
+      if (user?.image) {
+        setFileList([{ uid: "", name: user?.name, url: user?.image }]);
+      }
+    }
+  }, [isOpen, mode, data, form]);
 
   return (
     <Modal
@@ -128,46 +116,16 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       maskClosable={false}
     >
       <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: "Email không được để trống" }]}
+        label="Tên user"
+        name="name"
+        rules={[{ required: true, message: "Tên user không được để trống" }]}
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Họ và tên" name="name">
-        <Input />
+      <Form.Item label="Mô tả" name="description">
+        <Input.TextArea />
       </Form.Item>
-      <Form.Item
-        label="Mật khẩu"
-        name="password"
-        rules={[{ required: true, message: "Mật khẩu không được để trống" }]}
-      >
-        <Input type="password" />
-      </Form.Item>
-      <Form.Item
-        label="Nhập lại mật khẩu"
-        name="confirm_password"
-        rules={[
-          { required: true, message: "Xác nhận mật khẩu không được để trống" },
-        ]}
-      >
-        <Input type="confirm_password" />
-      </Form.Item>
-      <Form.Item
-        name="shop_id"
-        label="Cửa hàng"
-        rules={[{ required: true, message: "Cửa hàng không được để trống" }]}
-      >
-        <Select options={shopOptions} />
-      </Form.Item>
-      <Form.Item
-        name="role"
-        label="Vai trò"
-        rules={[{ required: true, message: "Chức vụ không được để trống" }]}
-      >
-        <Select options={roleOptions} />
-      </Form.Item>
-      <Form.Item label="Ảnh đại diện">
+      <Form.Item label="Ảnh">
         <Upload
           beforeUpload={() => false}
           listType="picture-card"
@@ -200,8 +158,25 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
           />
         )}
       </Form.Item>
+      <Form.Item name="book_id" label="Quyền">
+        <Select
+          options={[
+            {
+              label: "Nhân viên",
+              value: "STAFF",
+            },
+            {
+              label: "Khách hàng",
+              value: "CUSTOMER",
+            },
+          ]}
+        />
+      </Form.Item>
+      <Form.Item name="code" label="Mã">
+        <Input />
+      </Form.Item>
     </Modal>
   );
 };
 
-export default UserController;
+export default RoleController;
