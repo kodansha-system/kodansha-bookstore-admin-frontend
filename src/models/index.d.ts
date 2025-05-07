@@ -123,3 +123,69 @@ export interface IReview {
   image?: File;
   is_verified: boolean;
 }
+
+interface IOrder {
+  user_id: {
+    name: string;
+  };
+  shop_id: {
+    address: string;
+  };
+  address: {
+    name: string;
+    phone: string;
+    detail: string;
+  };
+  total_price: number;
+  discount: number;
+  total_to_pay: number;
+  carrier: {
+    id: string;
+    name: string;
+    fee: number;
+    order_code: OrderStatus;
+  };
+  tracking_order: { status: number; time: Date }[];
+  books: {
+    book_id: {
+      name: string;
+      price: number;
+      images: string[];
+      rating_average: number;
+      id: string;
+    };
+    quantity: number;
+    price: number;
+    id: string;
+    is_deleted: boolean;
+    deleted_at: any;
+  }[];
+  order_status: number;
+  vouchers: string[];
+  payment_method: string;
+  payment_status: PaymentStatus;
+  note: string;
+  delivery_address: any;
+  created_by: any;
+  id: string;
+  is_deleted: boolean;
+  deleted_at: any;
+  created_at: string;
+  updated_at: string;
+  shop_pickup_expire_at: string;
+  payment_expire_at: string;
+}
+
+interface DetailOrderPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export interface IFlashSale {
+  id: string;
+  name: string;
+  start_time: Date;
+  end_time: Date;
+  books: any;
+}

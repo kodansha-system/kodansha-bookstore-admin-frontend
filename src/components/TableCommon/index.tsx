@@ -15,10 +15,10 @@ const TableCommon = (props: TableProps) => {
   return (
     <StyledTable>
       <Table
-        {...props}
         bordered
         className="w-full"
         scroll={{ x: 800, y: 450 }}
+        {...props}
       />
     </StyledTable>
   );

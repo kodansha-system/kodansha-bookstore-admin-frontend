@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { IRole } from "@/models";
-import { notification } from "antd";
+import { message } from "antd";
 import {
   createRole,
   editRole,
@@ -34,7 +34,7 @@ export const useCreateRole = () => {
     mutationFn: createRole,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.ROLES] });
-      notification.success({ message: "Tạo mới role thành công!" });
+      message.success("Tạo mới role thành công!");
     },
   });
 
@@ -48,7 +48,7 @@ export const useEditRole = () => {
     mutationFn: async (data: IRole) => await editRole(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.ROLES] });
-      notification.success({ message: "Sửa role thành công!" });
+      message.success("Sửa role thành công!");
     },
   });
 
@@ -62,7 +62,7 @@ export const useUnActiveRole = () => {
     mutationFn: async (id: string) => await unActiveRole(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.ROLES] });
-      notification.success({ message: "Ẩn role thành công!" });
+      message.success("Ẩn role thành công!");
     },
   });
 

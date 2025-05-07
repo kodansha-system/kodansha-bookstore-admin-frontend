@@ -7,7 +7,7 @@ import {
   unActiveUser,
 } from "../services/users";
 import { IUser } from "../models";
-import { notification } from "antd";
+import { message } from "antd";
 
 export const useUsers = () => {
   const query = useQuery({ queryKey: ["users"], queryFn: getListUser });
@@ -55,7 +55,7 @@ export const useUnActiveUser = () => {
     mutationFn: async (id: string) => await unActiveUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      notification.success({ message: "Khóa tại khoản thành công!" });
+      message.success("Khóa tại khoản thành công!");
     },
   });
 

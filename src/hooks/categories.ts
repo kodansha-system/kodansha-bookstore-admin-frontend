@@ -8,14 +8,14 @@ import {
   createArticle,
   editArticle,
   getArticle,
-  getListArticle,
   unActiveArticle,
 } from "@/services/articles";
+import { getListCategories } from "@/services/categories";
 
-export const useArticles = (filter: any) => {
+export const useCategories = (filter: any) => {
   return useQuery({
-    queryKey: [QueryKeys.ARTICLES, filter],
-    queryFn: () => getListArticle(filter),
+    queryKey: ["categories", filter],
+    queryFn: () => getListCategories(filter),
   });
 };
 

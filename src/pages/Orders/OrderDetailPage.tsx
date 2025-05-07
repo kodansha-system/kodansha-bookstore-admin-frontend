@@ -1,0 +1,300 @@
+import { useCallback, useEffect, useState } from "react";
+
+import dayjs from "dayjs";
+
+import instance from "@/services/apiRequest";
+import OrderHistory from "./components/OrderHistory";
+import BookTable from "./components/BookTable";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  DATE_FORMAT,
+  OrderStatus,
+  OrderStatusText,
+  PAY_METHODS,
+  PaymentMethodText,
+  PaymentStatus,
+  PaymentStatusText,
+} from "@/utils/common";
+import { Button } from "antd";
+import CancelOrderModal from "./components/CancelOrder";
+import UpdateOrderStatusModal from "./components/UpdateOrderStatus";
+
+interface IOrder {
+  user_id: {
+    name: string;
+  };
+  shop_id: {
+    address: string;
+  };
+  address: {
+    name: string;
+    phone: string;
+    detail: string;
+  };
+  total_price: number;
+  discount: number;
+  total_to_pay: number;
+  carrier: {
+    id: string;
+    name: string;
+    fee: number;
+    order_code: OrderStatus;
+  };
+  tracking_order: { status: number; time: Date }[];
+  books: {
+    book_id: {
+      name: string;
+      price: number;
+      images: string[];
+      rating_average: number;
+      id: string;
+    };
+    quantity: number;
+    price: number;
+    id: string;
+    is_deleted: boolean;
+    deleted_at: any;
+  }[];
+  order_status: number;
+  vouchers: string[];
+  payment_method: string;
+  payment_status: PaymentStatus;
+  note: string;
+  delivery_address: any;
+  created_by: any;
+  id: string;
+  is_deleted: boolean;
+  deleted_at: any;
+  created_at: string;
+  updated_at: string;
+  shop_pickup_expire_at: string;
+  payment_expire_at: string;
+}
+
+const OrderDetailPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [dataOrder, setDataOrder] = useState<IOrder>();
+  const [timeLeft, setTimeLeft] = useState<any>();
+  const [paymentTimeLeft, setPaymentTimeLeft] = useState<any>();
+  const handleGetDetailOrder = useCallback(async () => {
+    const res = await instance.get(`/orders/${id}`);
+
+    setDataOrder(res?.data);
+  }, [id]);
+
+  function getTimeLeft(deadline: string) {
+    const targetTime = new Date(deadline).getTime();
+    const now = new Date().getTime();
+    const diff = targetTime - now;
+
+    if (diff <= 0) {
+      return {
+        days: "00",
+        hours: "00",
+        minutes: "00",
+        seconds: "00",
+        isExpired: true,
+      };
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    return {
+      days: String(days).padStart(2, "0"),
+      hours: String(hours).padStart(2, "0"),
+      minutes: String(minutes).padStart(2, "0"),
+      seconds: String(seconds).padStart(2, "0"),
+      isExpired: false,
+    };
+  }
+
+  useEffect(() => {
+    handleGetDetailOrder();
+  }, [handleGetDetailOrder]);
+
+  useEffect(() => {
+    if (
+      dataOrder &&
+      dataOrder.order_status !== OrderStatus.Cancelled &&
+      dataOrder.shop_pickup_expire_at
+    ) {
+      const interval = setInterval(() => {
+        const updatedTime = getTimeLeft(dataOrder.shop_pickup_expire_at);
+
+        setTimeLeft(updatedTime);
+
+        if (updatedTime.isExpired) {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [dataOrder]);
+
+  useEffect(() => {
+    if (
+      dataOrder &&
+      dataOrder.order_status !== OrderStatus.Cancelled &&
+      dataOrder.payment_expire_at
+    ) {
+      const interval = setInterval(() => {
+        const updatedTime = getTimeLeft(dataOrder.payment_expire_at);
+
+        setPaymentTimeLeft(updatedTime);
+
+        if (updatedTime.isExpired) {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [dataOrder]);
+
+  return (
+    <>
+      <div className="pb-3 text-center text-[20px] font-medium">
+        Chi tiết đơn hàng
+      </div>
+
+      <div>
+        <div className="rounded-md px-[50px] md:px-[20px]">
+          <div className="flex justify-between">
+            <div className="flex w-full flex-col gap-3 rounded-md py-5 pb-[30px] text-[15px]">
+              <div>
+                <span className="font-medium">Tên người nhận: </span>
+                {dataOrder?.delivery_address?.customer_name}
+              </div>
+
+              <div>
+                <span className="font-medium">Số điện thoại: </span>
+                {dataOrder?.delivery_address?.phone_number}
+              </div>
+
+              <div>
+                <span className="font-medium">Địa chỉ: </span>
+                {dataOrder?.delivery_address?.full_address}
+              </div>
+
+              <div>
+                <span className="font-medium">Phương thức thanh toán: </span>
+                {PaymentMethodText[dataOrder?.payment_method as PAY_METHODS]}
+                &nbsp;
+                {`(${
+                  PaymentStatusText[dataOrder?.payment_status as PaymentStatus]
+                })`}
+              </div>
+
+              {dataOrder?.note && (
+                <div>
+                  <span className="font-medium">Ghi chú: </span>
+                  {dataOrder?.note}
+                </div>
+              )}
+
+              {dataOrder?.payment_status === PaymentStatus.PENDING &&
+                dataOrder?.order_status === OrderStatus.New &&
+                paymentTimeLeft && (
+                  <div>
+                    <span className="font-medium">
+                      Thời gian còn lại để thanh toán:&nbsp;
+                    </span>
+                    <span className="italic text-red-500">{`${paymentTimeLeft?.minutes} phút ${paymentTimeLeft?.seconds} giây`}</span>
+                  </div>
+                )}
+            </div>
+
+            <div className="flex w-full flex-col gap-3 rounded-md p-5 pb-[30px] text-[15px]">
+              {dataOrder?.carrier?.name && (
+                <div>
+                  <span className="font-medium">Vận chuyển bởi:&nbsp;</span>{" "}
+                  {dataOrder?.carrier?.name}
+                </div>
+              )}
+
+              <div>
+                <span className="font-medium">Tổng tiền:&nbsp;</span>
+                <span className="font-bold text-red-500">
+                  {dataOrder?.total_to_pay?.toLocaleString()}
+                </span>
+              </div>
+
+              <div>
+                <span className="font-medium">Trạng thái:&nbsp;</span>
+                {OrderStatusText[dataOrder?.order_status as OrderStatus]}
+              </div>
+
+              {dataOrder?.order_status !== OrderStatus.Completed &&
+                dataOrder?.order_status !== OrderStatus.Cancelled &&
+                timeLeft && (
+                  <div>
+                    <span className="font-medium">
+                      Thời gian còn lại để đến cửa hàng lấy sách:&nbsp;
+                    </span>
+                    <span className="italic text-red-500">{`${timeLeft?.days} ngày ${timeLeft?.hours} giờ ${timeLeft?.minutes} phút ${timeLeft?.seconds} giây`}</span>
+                  </div>
+                )}
+
+              {dataOrder?.shop_id && (
+                <div>
+                  <div>
+                    <span className="font-medium">
+                      Địa chỉ nhận hàng:&nbsp;
+                    </span>
+                    {dataOrder?.shop_id?.address}&nbsp;
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-5 md:flex-row md:justify-between">
+            <div className="flex w-full justify-center pb-0 mb-0 overflow-auto rounded-md  bg-white text-[15px] md:w-[900px]">
+              <BookTable
+                books={dataOrder?.books as any}
+                isOrderCompleted={
+                  dataOrder?.order_status === OrderStatus.Completed
+                }
+              />
+            </div>
+
+            <div className="flex w-full justify-center rounded-md pb-[30px] text-[15px] md:min-w-[400px] md:max-w-[400px]">
+              <OrderHistory
+                events={dataOrder?.tracking_order?.map((item: any) => {
+                  return {
+                    date: dayjs(item?.time).format(DATE_FORMAT.DAY_AND_TIME),
+                    description: OrderStatusText[item?.status as OrderStatus],
+                    status: "completed",
+                  };
+                })}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="my-5 flex justify-end">
+          <Button className="mr-3" onClick={() => navigate("/orders")}>
+            Quay lại
+          </Button>
+          <UpdateOrderStatusModal
+            orderId={String(dataOrder?.id)}
+            refetch={handleGetDetailOrder}
+            currentStatus={String(dataOrder?.order_status)}
+          />
+          <CancelOrderModal
+            orderId={String(dataOrder?.id)}
+            refetch={handleGetDetailOrder}
+            currentStatus={String(dataOrder?.order_status)}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default OrderDetailPage;

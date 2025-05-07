@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { IReview } from "@/models";
-import { notification } from "antd";
+import { message } from "antd";
 
 import { QueryKeys } from "@/constants";
 import {
@@ -35,7 +35,7 @@ export const useCreateReview = () => {
     mutationFn: createReview,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.REVIEWS] });
-      notification.success({ message: "Tạo mới review thành công!" });
+      message.success("Tạo mới review thành công!");
     },
   });
 
@@ -49,7 +49,7 @@ export const useVerifiedReview = () => {
     mutationFn: async (data: IReview) => await verifiedReview(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.REVIEWS] });
-      notification.success({ message: "Cập nhật review thành công!" });
+      message.success("Cập nhật review thành công!");
     },
   });
 
@@ -63,7 +63,7 @@ export const useEditReview = () => {
     mutationFn: async (data: IReview) => await editReview(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.REVIEWS] });
-      notification.success({ message: "Sửa review thành công!" });
+      message.success("Sửa review thành công!");
     },
   });
 
@@ -77,7 +77,7 @@ export const useUnActiveReview = () => {
     mutationFn: async (id: string) => await unActiveReview(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.REVIEWS] });
-      notification.success({ message: "Ẩn review thành công!" });
+      message.success("Ẩn review thành công!");
     },
   });
 

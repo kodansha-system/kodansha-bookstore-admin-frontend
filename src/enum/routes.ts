@@ -12,4 +12,6 @@ export enum RoutePath {
   ROLES = "/roles",
   ARTICLES = "/articles",
   REVIEWS = "/reviews",
+  ORDERS = "/orders",
+  FLASH_SALES = "/flash_sales",
 }

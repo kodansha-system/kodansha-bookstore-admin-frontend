@@ -29,11 +29,11 @@ instance.interceptors.response.use(
     // if (error.response.status === 401) {
     //   logout();
     // }
-    return Promise.reject(error);
+    return Promise.reject(error?.response?.data);
   }
 );
 
-function logout() {
+export function logout() {
   localStorage.removeItem("token");
   window.location.href = "/login";
 }

@@ -19,4 +19,5 @@ export const QueryKeys = {
   ROLES: "roles",
   ARTICLES: "articles",
   REVIEWS: "reviews",
+  FLASH_SALES: "flashsales",
 };

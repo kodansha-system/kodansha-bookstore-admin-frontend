@@ -8,4 +8,6 @@ export enum ApiPath {
   ROLES = "/roles",
   ARTICLES = "/articles",
   REVIEWS = "/reviews",
+  ORDERS = "/orders",
+  FLASH_SALES = "/flashsales",
 }

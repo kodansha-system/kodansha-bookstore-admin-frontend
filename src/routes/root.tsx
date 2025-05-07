@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import IconBanner from "@/components/icons/IconBanner";
 import { StyledLayout } from "./styled";
 import { IconUser } from "@/components/icons";
+import { RoutePath } from "@/enum/routes";
 
 const { Content, Sider } = Layout;
 
@@ -48,6 +49,11 @@ const items: MenuItem[] = [
     <IconBanner className="size-[20px]" />
   ),
   getItem(
+    "Quản lý flash sales",
+    RoutePath.FLASH_SALES,
+    <IconBanner className="size-[20px]" />
+  ),
+  getItem(
     "Quản lý mã giảm giá",
     "/vouchers",
     <IconBanner className="size-[20px]" />
@@ -60,10 +66,26 @@ export default function Root() {
   return (
     <StyledLayout>
       <Layout style={{ height: "100vh" }}>
-        <Sider collapsible width={220} style={{ background: "white" }}>
-          <div className="py-2 font-bold text-[21px] text-center bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 bg-clip-text text-transparent">
-            Kodansha
+        <Sider
+          collapsible
+          breakpoint="lg"
+          collapsedWidth={80} // hoặc 80 nếu bạn muốn chỉ thu gọn chứ không ẩn hoàn toàn
+          width={220}
+          style={{ background: "white" }}
+        >
+          <div className="py-2 text-center">
+            {/* Logo hình ảnh trên màn hình nhỏ (dưới lg) */}
+            <img
+              src="/kodansha.png"
+              alt="logo"
+              className="block lg:hidden mx-auto w-10 h-10"
+            />
+
+            <div className="hidden lg:block font-bold text-[21px] bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 bg-clip-text text-transparent">
+              Kodansha
+            </div>
           </div>
+
           <Menu
             style={{ background: "white" }}
             theme="light"
@@ -74,7 +96,7 @@ export default function Root() {
           />
         </Sider>
         <Layout>
-          <Content style={{ margin: "16px" }}>
+          <Content style={{ margin: "16px", overflow: "auto" }}>
             <div
               style={{
                 padding: 24,

@@ -10,6 +10,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Roles from "./pages/Roles";
 import Articles from "./pages/Articles";
 import Reviews from "./pages/Reviews";
+import Orders from "./pages/Orders";
+import OrderDetailPage from "./pages/Orders/OrderDetailPage";
+import FlashSales from "./pages/FlashSale";
+import CreateNewFlashSalePage from "./pages/FlashSale/CreateFlashSale";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -44,6 +48,22 @@ const router = createBrowserRouter([
       {
         path: RoutePath.REVIEWS,
         element: <Reviews />,
+      },
+      {
+        path: RoutePath.ORDERS,
+        element: <Orders />,
+      },
+      {
+        path: RoutePath.ORDERS + "/:id",
+        element: <OrderDetailPage />,
+      },
+      {
+        path: RoutePath.FLASH_SALES,
+        element: <FlashSales />,
+      },
+      {
+        path: RoutePath.FLASH_SALES + "/create",
+        element: <CreateNewFlashSalePage />,
       },
     ],
   },

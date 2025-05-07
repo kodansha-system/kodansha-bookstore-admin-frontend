@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "path-to/_variables.scss";
-@import "path-to/_keyframes-animations.scss";
-
 /* Basic editor styles */
 .ProseMirror {
   padding: 10px;
