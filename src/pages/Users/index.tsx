@@ -1,16 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Image, Popover, Table } from "antd";
+import { Image, Input, Popover, Table } from "antd";
 import Header from "@/components/Header";
 import AddButton from "@/components/AddButton";
 import { useUsers, useUnActiveUser } from "@/hooks/users";
 import { useState } from "react";
 import { IUser } from "@/models";
-import { useQueryClient } from "@tanstack/react-query";
 import UserController from "./components/UserController";
 import { Action } from "@/enum/actions";
+import TableCommon from "@/components/TableCommon";
+import EditButton from "@/components/EditButton";
+import DeleteButton from "@/components/DeleteButton";
 
 const Users = () => {
-  const { data, isSuccess, isLoading } = useUsers();
+  const [filter, setFilter] = useState({
+    keyword: undefined,
+    current: 1,
+    pageSize: 10,
+  });
+  const { data, isSuccess, isLoading } = useUsers(filter);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
@@ -33,9 +40,9 @@ const Users = () => {
       align: "left",
     },
     {
-      title: "Role",
-      dataIndex: ["role", "name"],
-      key: "role",
+      title: "Số điện thoại",
+      dataIndex: "phone_number",
+      key: "phone_number",
       ellipsis: true,
       align: "left",
     },
@@ -43,7 +50,7 @@ const Users = () => {
       title: "Ảnh",
       dataIndex: "image",
       key: "image",
-      width: "80px",
+      width: "100px",
       render: (text: string) => {
         return (
           <div className="flex justify-center">
@@ -60,13 +67,8 @@ const Users = () => {
       render: (_: unknown, data: IUser) => {
         return (
           <div className="flex gap-x-2 justify-center">
-            <Button
-              onClick={() => handleEditUser(data.id)}
-              type="primary"
-              className="bg-blue-400 text-white"
-            >
-              Sửa
-            </Button>
+            <EditButton onClick={() => handleEditUser(data?.id)} />
+
             <Popover
               placement="top"
               title={"Xác nhận"}
@@ -84,9 +86,7 @@ const Users = () => {
                 </>
               }
             >
-              <Button type="dashed" className="bg-red-500 text-white">
-                Xóa
-              </Button>
+              <DeleteButton />
             </Popover>
           </div>
         );
@@ -97,14 +97,10 @@ const Users = () => {
   const handleAddNewUser = () => {
     setIsOpen(true);
   };
-  const queryClient = useQueryClient();
 
   const handleEditUser = (id: string) => {
     setIsOpenEdit(true);
     setId(id);
-    // queryClient.invalidateQueries({
-    //   queryKey: ["", id],
-    // });
   };
 
   const handleHideUser = (id: string) => {
@@ -118,13 +114,37 @@ const Users = () => {
       >
         Quản lý users
       </Header>
-      <Table
+
+      <Input.Search
+        placeholder="Tìm kiếm người dùng"
+        allowClear
+        onSearch={(value: any) => {
+          setFilter((prev) => ({
+            ...prev,
+            keyword: value,
+            current: 1,
+          }));
+        }}
+        style={{ width: 300 }}
+        className="mb-3"
+      />
+
+      <TableCommon
         columns={columnsUser}
         dataSource={isSuccess ? data?.data?.users : []}
         loading={isLoading}
         bordered
         className="w-full"
         scroll={{ x: 800 }}
+        pagination={{
+          showSizeChanger: true,
+          total: data?.data?.meta?.totalItems,
+          current: filter.current,
+          pageSize: filter.pageSize,
+          onChange: (page, pageSize) => {
+            setFilter({ ...filter, current: page, pageSize });
+          },
+        }}
       />
       <UserController mode={Action.ADD} isOpen={isOpen} setIsOpen={setIsOpen} />
       <UserController

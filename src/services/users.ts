@@ -2,8 +2,10 @@ import { ApiPath } from "../enum/api";
 import { IUser } from "../models";
 import instance from "./apiRequest";
 
-export const getListUser = async () => {
-  return await instance.get(`${ApiPath.USERS}`);
+export const getListUser = async (params: any) => {
+  return await instance.get(`${ApiPath.USERS}`, {
+    params,
+  });
 };
 
 export const getUser = async (id: string) => {

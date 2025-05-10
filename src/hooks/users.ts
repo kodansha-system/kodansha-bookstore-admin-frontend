@@ -9,8 +9,11 @@ import {
 import { IUser } from "../models";
 import { message } from "antd";
 
-export const useUsers = () => {
-  const query = useQuery({ queryKey: ["users"], queryFn: getListUser });
+export const useUsers = (filter: any) => {
+  const query = useQuery({
+    queryKey: ["users", filter],
+    queryFn: () => getListUser(filter),
+  });
   return query;
 };
 
