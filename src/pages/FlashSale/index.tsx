@@ -102,7 +102,7 @@ const FlashSales = () => {
   };
 
   const handleEditFlashSale = (id: string) => {
-    console.log(id);
+    navigate(`${RoutePath.FLASH_SALES}/edit/${id}`);
   };
 
   const handleHideFlashSale = (id: string) => {
@@ -138,6 +138,7 @@ const FlashSales = () => {
         dataSource={isSuccess ? listFlashSale?.data : []}
         loading={isLoading}
         pagination={{
+          showSizeChanger: true,
           total: listFlashSale?.data?.meta?.totalItems,
           current: filter.current,
           pageSize: filter.pageSize,

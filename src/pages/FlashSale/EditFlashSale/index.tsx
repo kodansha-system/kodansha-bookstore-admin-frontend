@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Form,
@@ -15,9 +15,10 @@ import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useBooks } from "@/hooks/books";
 import TableCommon from "@/components/TableCommon";
 import { useCategories } from "@/hooks/categories";
-import { useCreateFlashSale } from "@/hooks/flashSales";
+import { useDetailFlashSale, useEditFlashSale } from "@/hooks/flashSales";
 import { disabledDate, disabledRangeTime } from "@/utils/common";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 interface Book {
   id: number;
@@ -33,7 +34,7 @@ interface FlashSaleItem {
   quantity: number;
 }
 
-const CreateNewFlashSalePage: React.FC = () => {
+const EditFlashSalePage: React.FC = () => {
   const [form] = Form.useForm();
   const [items, setItems] = useState<FlashSaleItem[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -51,27 +52,16 @@ const CreateNewFlashSalePage: React.FC = () => {
   const { data: allBooks } = useBooks({ get_all: true });
   const { data: listCategories } = useCategories({ get_all: true });
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { data: flashSaleDetail, isLoading: isLoadingDetail } =
+    useDetailFlashSale(String(id));
+
+  const updateFlashSale = useEditFlashSale();
 
   const bookColumns: any = [
     { title: "Tên sách", dataIndex: "name" },
-    {
-      title: "Giá gốc",
-      dataIndex: "origin_price",
-      render: (data: any) => <div>{data ? data.toLocaleString() : ""}</div>,
-    },
-    {
-      title: "Giá ngày thường",
-      dataIndex: "price",
-      align: "center",
-      render: (data: any, item: any) => (
-        <div className="flex gap-x-2 justify-center">
-          <div>{data ? data.toLocaleString() : ""}</div>
-          <div className="text-gray-400">
-            (giảm {((1 - item?.price / item?.origin_price) * 100).toFixed(0)}%)
-          </div>
-        </div>
-      ),
-    },
+    { title: "Giá gốc", dataIndex: "price" },
     {
       title: "Danh mục",
       dataIndex: "category",
@@ -136,6 +126,7 @@ const CreateNewFlashSalePage: React.FC = () => {
   const handleAddBooks = () => {
     const listBook = allBooks?.data;
     const uniqueSelectedRowKeys = [...new Set(selectedRowKeys)];
+
     const newItems = listBook
       .filter((book: any) => {
         return (
@@ -148,12 +139,10 @@ const CreateNewFlashSalePage: React.FC = () => {
         book,
         price:
           discountOption === "percent"
-            ? Math.floor(book.origin_price * (1 - discountValue / 100))
+            ? Math.floor(book.price * (1 - discountValue / 100))
             : discountValue,
         quantity: 1,
       }));
-
-    console.log(newItems);
 
     setItems((prev) => [...prev, ...newItems]);
 
@@ -165,12 +154,11 @@ const CreateNewFlashSalePage: React.FC = () => {
     ]);
   };
 
-  const createFlashSale = useCreateFlashSale();
-
   const handleCreateFlashSale = async () => {
     try {
       const values = await form.validateFields();
       const payload: any = {
+        id: flashSaleDetail?.data?.id,
         name: values.name,
         start_time: values.duration?.[0]?.toISOString(),
         end_time: values.duration?.[1]?.toISOString(),
@@ -180,15 +168,36 @@ const CreateNewFlashSalePage: React.FC = () => {
           quantity: item.quantity,
         })),
       };
-      createFlashSale.mutate(payload);
+      updateFlashSale.mutate(payload);
     } catch (error) {
       message.error("Vui lòng nhập đầy đủ thông tin");
     }
   };
 
+  useEffect(() => {
+    form.setFieldsValue({
+      name: flashSaleDetail?.data?.name,
+      duration: [
+        dayjs(flashSaleDetail?.data?.start_time),
+        dayjs(flashSaleDetail?.data?.end_time),
+      ],
+    });
+    const itemsData = flashSaleDetail?.data?.books?.map((item: any) => {
+      return {
+        book: {
+          id: item?.book_id?.id,
+          name: item?.book_id?.name,
+        },
+        price: item?.price,
+        quantity: item?.quantity,
+      };
+    });
+    setItems(itemsData);
+  }, [flashSaleDetail]);
+
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-xl font-semibold">Thêm Flash Sale</h1>
+      <h1 className="text-xl font-semibold">Sửa Flash Sale</h1>
       <Form layout="vertical" form={form}>
         <Form.Item
           label="Tên Flash Sale"
@@ -249,7 +258,7 @@ const CreateNewFlashSalePage: React.FC = () => {
           Quay lại
         </Button>
         <Button type="primary" onClick={handleCreateFlashSale}>
-          Tạo mới flash sale
+          Sửa flash sale
         </Button>
       </div>
 
@@ -260,7 +269,6 @@ const CreateNewFlashSalePage: React.FC = () => {
         onOk={handleAddBooks}
         okText="Thêm"
         width={1000}
-        cancelText="Hủy"
       >
         <div className="mb-4 flex gap-4">
           <Input.Search
@@ -304,7 +312,7 @@ const CreateNewFlashSalePage: React.FC = () => {
         />
         <div className="flex gap-4 mt-4">
           <div className="flex items-center gap-2">
-            <label className="flex items-center gap-x-1">
+            <label>
               <input
                 type="radio"
                 checked={discountOption === "percent"}
@@ -320,7 +328,7 @@ const CreateNewFlashSalePage: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-2">
-            <label className="flex items-center gap-x-1">
+            <label>
               <input
                 type="radio"
                 checked={discountOption === "fixed"}
@@ -345,4 +353,4 @@ const CreateNewFlashSalePage: React.FC = () => {
   );
 };
 
-export default CreateNewFlashSalePage;
+export default EditFlashSalePage;
