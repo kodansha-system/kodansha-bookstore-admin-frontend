@@ -23,12 +23,7 @@ export const createFlashSale = async (data: IFlashSale) => {
 export const editFlashSale = async (data: IFlashSale) => {
   const response = await instance.patch(
     `${import.meta.env.VITE_BACKEND_URL}${ApiPath.FLASH_SALES}/${data.id}`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    data
   );
   return response.data;
 };

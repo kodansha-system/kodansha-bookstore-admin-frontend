@@ -51,7 +51,10 @@ export const useEditFlashSale = () => {
     mutationFn: async (data: IFlashSale) => await editFlashSale(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.FLASH_SALES] });
-      message.success("Sửa article thành công!");
+      message.success("Sửa flash sale thành công!");
+    },
+    onError: (e) => {
+      message.error(e?.message || "Có lỗi khi sửa flash sale");
     },
   });
 

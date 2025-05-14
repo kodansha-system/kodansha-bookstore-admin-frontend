@@ -25,18 +25,18 @@ const Articles = () => {
 
   const columnsArticle: any = [
     {
-      title: "Tên article",
-      dataIndex: "title",
-      key: "title",
+      title: "Ngày tạo",
+      dataIndex: "created_at",
+      key: "created_at",
       width: "20%",
       ellipsis: true,
       align: "left",
     },
     {
-      title: "Mô tả",
-      dataIndex: "content",
-      key: "content",
-      width: "30%",
+      title: "Tên bài viết",
+      dataIndex: "title",
+      key: "title",
+      width: "20%",
       ellipsis: true,
       align: "left",
     },
@@ -104,7 +104,7 @@ const Articles = () => {
       <Header
         element={<AddButton onClick={handleAddNewArticle}>Thêm mới</AddButton>}
       >
-        Quản lý articles
+        Quản lý bài viết
       </Header>
 
       <Input.Search
@@ -126,6 +126,7 @@ const Articles = () => {
         dataSource={isSuccess ? data?.data?.articles : []}
         loading={isLoading}
         pagination={{
+          showSizeChanger: true,
           total: data?.data?.meta?.totalItems,
           current: filter.current,
           pageSize: filter.pageSize,

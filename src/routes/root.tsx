@@ -4,6 +4,19 @@ import IconBanner from "@/components/icons/IconBanner";
 import { StyledLayout } from "./styled";
 import { IconUser } from "@/components/icons";
 import { RoutePath } from "@/enum/routes";
+import Header from "@/components/layout/Header";
+import {
+  AppstoreOutlined,
+  BarChartOutlined,
+  BookOutlined,
+  FileTextOutlined,
+  GiftOutlined,
+  ShopOutlined,
+  ShoppingCartOutlined,
+  StarOutlined,
+  ThunderboltOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 
 const { Content, Sider } = Layout;
 
@@ -24,41 +37,52 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Quản lý người dùng", "/users", <IconUser className="size-[20px]" />),
-  getItem("Quản lý vai trò", "/roles", <IconUser className="size-[20px]" />),
+  getItem(
+    "Quản lý thống kê",
+    "/statistics",
+    <BarChartOutlined className="size-[20px]" />
+  ),
+  getItem(
+    "Quản lý người dùng",
+    "/users",
+    <UserOutlined className="size-[20px]" />
+  ),
   getItem(
     "Quản lý bài viết",
     "/articles",
-    <IconBanner className="size-[20px]" />
+    <FileTextOutlined className="size-[20px]" />
   ),
   getItem(
     "Quản lý đánh giá",
     "/reviews",
-    <IconBanner className="size-[20px]" />
+    <StarOutlined className="size-[20px]" />
   ),
   getItem(
     "Quản lý danh mục sách",
     "/categories",
-    <IconBanner className="size-[20px]" />
+    <AppstoreOutlined className="size-[20px]" />
   ),
-  getItem("Quản lý sách", "/books", <IconBanner className="size-[20px]" />),
-  getItem("Quản lý cửa hàng", "/shops", <IconBanner className="size-[20px]" />),
+  getItem("Quản lý sách", "/books", <BookOutlined className="size-[20px]" />),
+  getItem(
+    "Quản lý cửa hàng",
+    "/shops",
+    <ShopOutlined className="size-[20px]" />
+  ),
   getItem(
     "Quản lý đơn hàng",
     "/orders",
-    <IconBanner className="size-[20px]" />
+    <ShoppingCartOutlined className="size-[20px]" />
   ),
   getItem(
     "Quản lý flash sales",
     RoutePath.FLASH_SALES,
-    <IconBanner className="size-[20px]" />
+    <ThunderboltOutlined className="size-[20px]" />
   ),
   getItem(
     "Quản lý mã giảm giá",
     "/vouchers",
-    <IconBanner className="size-[20px]" />
+    <GiftOutlined className="size-[20px]" />
   ),
-  getItem("Thống kê", "/statistics", <IconBanner className="size-[20px]" />),
 ];
 
 export default function Root() {
@@ -69,12 +93,11 @@ export default function Root() {
         <Sider
           collapsible
           breakpoint="lg"
-          collapsedWidth={80} // hoặc 80 nếu bạn muốn chỉ thu gọn chứ không ẩn hoàn toàn
+          collapsedWidth={80}
           width={220}
           style={{ background: "white" }}
         >
           <div className="py-2 text-center">
-            {/* Logo hình ảnh trên màn hình nhỏ (dưới lg) */}
             <img
               src="/kodansha.png"
               alt="logo"
@@ -89,13 +112,14 @@ export default function Root() {
           <Menu
             style={{ background: "white" }}
             theme="light"
-            defaultSelectedKeys={["/users"]}
+            selectedKeys={[location.pathname]}
             mode="inline"
             items={items}
             onClick={({ key }) => navigate(key)}
           />
         </Sider>
         <Layout>
+          <Header />
           <Content style={{ margin: "16px", overflow: "auto" }}>
             <div
               style={{

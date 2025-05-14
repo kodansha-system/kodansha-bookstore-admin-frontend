@@ -13,14 +13,18 @@ export const getUser = async (id: string) => {
 };
 
 export const createUser = async (data: IUser) => {
-  const response = await instance.post(ApiPath.USERS, data);
+  const response = await instance.post(ApiPath.USERS, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 
 export const editUser = async (data: IUser) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { email, id, _id, ...rest } = data;
-  const response = await instance.patch(`${ApiPath.USERS}/${id}`, rest);
+  const response = await instance.patch(`${ApiPath.USERS}/${id}`, rest, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 

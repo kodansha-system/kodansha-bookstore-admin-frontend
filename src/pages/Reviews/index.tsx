@@ -86,7 +86,7 @@ const Reviews = () => {
             >
               {data.is_verified ? "Bỏ xác thực" : "Xác thực"}
             </Button>
-            <EditButton onClick={() => handleEditReview(data?.id)} />
+            {/* <EditButton onClick={() => handleEditReview(data?.id)} /> */}
             <Popover
               placement="top"
               title={"Xác nhận"}
@@ -133,7 +133,7 @@ const Reviews = () => {
       <Header
         element={<AddButton onClick={handleAddNewReview}>Thêm mới</AddButton>}
       >
-        Quản lý reviews
+        Quản lý đánh giá
       </Header>
 
       <Input.Search
@@ -155,6 +155,7 @@ const Reviews = () => {
         dataSource={isSuccess ? data?.data?.reviews : []}
         loading={isLoading}
         pagination={{
+          showSizeChanger: true,
           total: data?.data?.meta?.totalItems,
           current: filter.current,
           pageSize: filter.pageSize,

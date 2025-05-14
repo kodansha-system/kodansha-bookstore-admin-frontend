@@ -112,7 +112,7 @@ const Users = () => {
       <Header
         element={<AddButton onClick={handleAddNewUser}>Thêm mới</AddButton>}
       >
-        Quản lý users
+        Quản lý người dùng
       </Header>
 
       <Input.Search

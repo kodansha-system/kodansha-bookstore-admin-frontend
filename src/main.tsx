@@ -14,6 +14,9 @@ import Orders from "./pages/Orders";
 import OrderDetailPage from "./pages/Orders/OrderDetailPage";
 import FlashSales from "./pages/FlashSale";
 import CreateNewFlashSalePage from "./pages/FlashSale/CreateFlashSale";
+import EditFlashSalePage from "./pages/FlashSale/EditFlashSale";
+import StatisticsOverview from "./pages/Statistics";
+import LoginPage from "./pages/Login";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -28,6 +31,10 @@ const App = () => {
 };
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
   {
     path: "/",
     element: <Root />,
@@ -64,6 +71,14 @@ const router = createBrowserRouter([
       {
         path: RoutePath.FLASH_SALES + "/create",
         element: <CreateNewFlashSalePage />,
+      },
+      {
+        path: RoutePath.FLASH_SALES + "/edit/:id",
+        element: <EditFlashSalePage />,
+      },
+      {
+        path: RoutePath.STATISTICS,
+        element: <StatisticsOverview />,
       },
     ],
   },

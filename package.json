@@ -32,15 +32,18 @@
     "antd": "^5.20.0",
     "axios": "^1.7.3",
     "dayjs": "^1.11.13",
+    "js-cookie": "^3.0.5",
     "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-highlight-words": "^0.20.0",
     "react-router-dom": "^6.26.0",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.15.3",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.13.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

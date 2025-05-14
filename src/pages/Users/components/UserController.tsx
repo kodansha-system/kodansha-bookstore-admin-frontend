@@ -6,7 +6,6 @@ import { useCreateUser, useDetailUser, useEditUser } from "@/hooks/users";
 import { IUser } from "@/models";
 import { Action } from "@/enum/actions";
 import { FileType, getBase64 } from "@/utils/file";
-import instance from "@/services/apiRequest";
 
 interface IProps {
   isOpen: boolean;
@@ -26,18 +25,11 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [shopOptions, setShopOptions] = useState([]);
-  const [roleOptions, setRoleOptions] = useState([]);
 
   useEffect(() => {
     if (isOpen && mode === "edit" && data) {
       const user = data?.data;
-      form.setFieldsValue({
-        name: user?.name,
-        status: user?.status,
-        password: user?.password,
-        shop_id: user?.shop_id,
-      });
+      form.setFieldsValue(user);
       if (user?.image) {
         setFileList([{ uid: "", name: user?.name, url: user?.image }]);
       }
@@ -75,34 +67,6 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
     setImageError(newFileList.length === 0);
   };
 
-  const handleGetListShop = async () => {
-    const res = await instance.get("/shops");
-    setShopOptions(
-      res?.data?.shops?.map((item: any) => {
-        return {
-          value: item?.id,
-          label: item?.address,
-        };
-      })
-    );
-  };
-
-  const handleGetListRole = async () => {
-    const res = await instance.get("/roles");
-    const roles = res?.data?.roles?.map(
-      (item: { id: string; name: string }) => ({
-        value: item.id,
-        label: item.name,
-      })
-    );
-    setRoleOptions(roles);
-  };
-
-  useEffect(() => {
-    handleGetListShop();
-    handleGetListRole();
-  }, []);
-
   return (
     <Modal
       open={isOpen}
@@ -130,43 +94,87 @@ const UserController = ({ isOpen, setIsOpen, mode, id }: IProps) => {
       <Form.Item
         label="Email"
         name="email"
-        rules={[{ required: true, message: "Email không được để trống" }]}
+        rules={
+          mode === Action.ADD
+            ? [{ required: true, message: "Email không được để trống" }]
+            : []
+        }
+      >
+        <Input disabled={mode === Action.EDIT} />
+      </Form.Item>
+
+      <Form.Item
+        label="Họ và tên"
+        name="name"
+        rules={
+          mode === Action.ADD
+            ? [{ required: true, message: "Họ và tên không được để trống" }]
+            : []
+        }
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Họ và tên" name="name">
-        <Input />
+
+      <Form.Item
+        name="gender"
+        label="Giới tính"
+        rules={
+          Action.ADD
+            ? [{ required: true, message: "Giới tính không được để trống" }]
+            : []
+        }
+      >
+        <Select
+          options={[
+            { value: "male", label: "Nam" },
+            { value: "female", label: "Nữ" },
+            { value: "other", label: "Khác" },
+          ]}
+          placeholder="Chọn giới tính"
+        />
       </Form.Item>
+
       <Form.Item
         label="Mật khẩu"
         name="password"
-        rules={[{ required: true, message: "Mật khẩu không được để trống" }]}
+        rules={
+          mode === Action.ADD
+            ? [{ required: true, message: "Mật khẩu không được để trống" }]
+            : []
+        }
       >
         <Input type="password" />
       </Form.Item>
+
       <Form.Item
         label="Nhập lại mật khẩu"
         name="confirm_password"
-        rules={[
-          { required: true, message: "Xác nhận mật khẩu không được để trống" },
-        ]}
+        rules={
+          mode === Action.ADD
+            ? [
+                {
+                  required: true,
+                  message: "Xác nhận mật khẩu không được để trống",
+                },
+              ]
+            : []
+        }
       >
-        <Input type="confirm_password" />
+        <Input type="password" />
       </Form.Item>
+
       <Form.Item
-        name="shop_id"
-        label="Cửa hàng"
-        rules={[{ required: true, message: "Cửa hàng không được để trống" }]}
+        label="Số điện thoại"
+        name="phone_number"
+        rules={
+          mode === Action.ADD
+            ? [{ required: true, message: "Số điện thoại không được để trống" }]
+            : []
+        }
       >
-        <Select options={shopOptions} />
+        <Input />
       </Form.Item>
-      <Form.Item
-        name="role"
-        label="Vai trò"
-        rules={[{ required: true, message: "Chức vụ không được để trống" }]}
-      >
-        <Select options={roleOptions} />
-      </Form.Item>
+
       <Form.Item label="Ảnh đại diện">
         <Upload
           beforeUpload={() => false}

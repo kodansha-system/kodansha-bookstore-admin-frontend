@@ -1,5 +1,5 @@
 export enum RoutePath {
-  DASHBOARD = "/",
+  LOGIN = "/",
   QUESTIONS = "/questions",
   SUBJECTS = "/subjects",
   TESTS = "/tests",
@@ -14,4 +14,5 @@ export enum RoutePath {
   REVIEWS = "/reviews",
   ORDERS = "/orders",
   FLASH_SALES = "/flash_sales",
+  STATISTICS = "/statistics",
 }

@@ -1,19 +1,36 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
-// Tạo một instance của Axios
 const instance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
+
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+const refreshToken = async () => {
+  try {
+    const response = await instance.get(`/auth/refresh`);
+    const newAccessToken = response.data.access_token;
+
+    Cookies.set("access_token", newAccessToken);
+
+    return newAccessToken;
+  } catch (error) {
+    console.error("Refresh token failed:", error);
+    throw error;
+  }
+};
 
 instance.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = `Bearer ${
-      import.meta.env.VITE_ACCESS_TOKEN
-    }`;
+    const access_token = Cookies.get("access_token");
+
+    config.headers.Authorization = `Bearer ${access_token}`;
     return config;
   },
   (error) => {
@@ -26,15 +43,16 @@ instance.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    // if (error.response.status === 401) {
-    //   logout();
-    // }
+    if (error.response.status === 401) {
+      logout();
+    }
     return Promise.reject(error?.response?.data);
   }
 );
 
 export function logout() {
-  localStorage.removeItem("token");
+  Cookies.remove("access_token");
+  Cookies.remove("refresh_token");
   window.location.href = "/login";
 }
 

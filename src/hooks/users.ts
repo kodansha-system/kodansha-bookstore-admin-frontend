@@ -8,6 +8,7 @@ import {
 } from "../services/users";
 import { IUser } from "../models";
 import { message } from "antd";
+import { error } from "console";
 
 export const useUsers = (filter: any) => {
   const query = useQuery({
@@ -33,6 +34,9 @@ export const useCreateUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
+    onError: (error) => {
+      message.error(error?.message || "Có lỗi xảy ra");
+    },
   });
 
   return createUserMutation;
@@ -45,6 +49,9 @@ export const useEditUser = () => {
     mutationFn: async (data: IUser) => await editUser(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error) => {
+      message.error(error?.message || "Có lỗi xảy ra");
     },
   });
 

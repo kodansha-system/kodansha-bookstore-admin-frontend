@@ -119,6 +119,7 @@ const Orders = () => {
         dataSource={isSuccess ? data?.data?.orders : []}
         loading={isLoading}
         pagination={{
+          showSizeChanger: true,
           total: data?.data?.meta?.totalItems,
           current: filter.current,
           pageSize: filter.pageSize,
