@@ -18,6 +18,16 @@ export const menuItems: IMenuItems[] = [
 export const QueryKeys = {
   ROLES: "roles",
   ARTICLES: "articles",
+  BOOKS: "books",
   REVIEWS: "reviews",
   FLASH_SALES: "flashsales",
+  CATEGORY: "category",
+  VOUCHERS: "vouchers",
+  SHOPS: "shops",
+  SHOP_BOOKS: "shopBooks",
+  STAFFS: "staffs",
+  USERS: "users",
+  PROVINCES: "provinces",
+  DISTRICTS: "districts",
+  WARDS: "wards",
 };

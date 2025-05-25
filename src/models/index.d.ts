@@ -1,3 +1,4 @@
+import { ICategory } from "@/models";
 import { RcFile } from "antd/es/upload";
 
 export interface IMenuItems {
@@ -188,4 +189,47 @@ export interface IFlashSale {
   start_time: Date;
   end_time: Date;
   books: any;
+}
+
+export interface IBooks {
+  name: string;
+  price: number;
+  origin_price: number;
+  image: File;
+  id: string;
+  _id: string;
+}
+
+export interface ICategory {
+  id: string;
+  name: string;
+  image: File | undefined;
+}
+
+export interface IVoucher {
+  id: string;
+}
+
+export interface IShop {
+  id: string;
+  name: string;
+  description: string;
+  image: File | RcFile | string;
+  address: string;
+  phone: string;
+  google_map_url: string;
+  working_time: string;
+  province_id: string;
+  district_id: string;
+  ward_id: string;
+}
+
+export interface IShopBooks {
+  id: string;
+  quantity: number;
+}
+
+export interface IStaff {
+  id: string;
+  name: string;
 }

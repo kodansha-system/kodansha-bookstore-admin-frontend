@@ -64,11 +64,6 @@ const items: MenuItem[] = [
   ),
   getItem("Quản lý sách", "/books", <BookOutlined className="size-[20px]" />),
   getItem(
-    "Quản lý cửa hàng",
-    "/shops",
-    <ShopOutlined className="size-[20px]" />
-  ),
-  getItem(
     "Quản lý đơn hàng",
     "/orders",
     <ShoppingCartOutlined className="size-[20px]" />
@@ -82,6 +77,21 @@ const items: MenuItem[] = [
     "Quản lý mã giảm giá",
     "/vouchers",
     <GiftOutlined className="size-[20px]" />
+  ),
+  getItem(
+    "Quản lý cửa hàng",
+    "/shops",
+    <ShopOutlined className="size-[20px]" />
+  ),
+  getItem(
+    "Quản lý sách tại cửa hàng",
+    "/shop-books",
+    <BookOutlined className="size-[20px]" />
+  ),
+  getItem(
+    "Quản lý nhân viên",
+    "/staffs",
+    <UserOutlined className="size-[20px]" />
   ),
 ];
 

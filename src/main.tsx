@@ -17,6 +17,10 @@ import CreateNewFlashSalePage from "./pages/FlashSale/CreateFlashSale";
 import EditFlashSalePage from "./pages/FlashSale/EditFlashSale";
 import StatisticsOverview from "./pages/Statistics";
 import LoginPage from "./pages/Login";
+import Books from "./pages/Books";
+import Categories from "./pages/Categories";
+import Vouchers from "./pages/Vouchers";
+import Shops from "./pages/Shops";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -53,6 +57,10 @@ const router = createBrowserRouter([
         element: <Articles />,
       },
       {
+        path: RoutePath.BOOKS,
+        element: <Books />,
+      },
+      {
         path: RoutePath.REVIEWS,
         element: <Reviews />,
       },
@@ -79,6 +87,26 @@ const router = createBrowserRouter([
       {
         path: RoutePath.STATISTICS,
         element: <StatisticsOverview />,
+      },
+      {
+        path: RoutePath.CATEGORIES,
+        element: <Categories />,
+      },
+      {
+        path: RoutePath.VOUCHERS,
+        element: <Vouchers />,
+      },
+      {
+        path: RoutePath.SHOPS,
+        element: <Shops />,
+      },
+      {
+        path: RoutePath.SHOP_BOOKS,
+        element: <Vouchers />,
+      },
+      {
+        path: RoutePath.STAFFS,
+        element: <Vouchers />,
       },
     ],
   },

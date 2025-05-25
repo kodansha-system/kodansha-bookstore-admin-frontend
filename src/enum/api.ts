@@ -10,4 +10,13 @@ export enum ApiPath {
   REVIEWS = "/reviews",
   ORDERS = "/orders",
   FLASH_SALES = "/flashsales",
+  BOOKS = "/books",
+  CATEGORIES = "/categories",
+  VOUCHERS = "/vouchers",
+  SHOPS = "/shops",
+  SHOP_BOOKS = "/shop-books",
+  STAFF = "/staffs",
+  PROVINCES = "/provinces",
+  DISTRICTS = "/districts",
+  WARDS = "/wards",
 }

@@ -1,70 +1,71 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { IArticle } from "@/models";
+import { ICategory } from "@/models";
 import { message } from "antd";
 
 import { QueryKeys } from "@/constants";
+
 import {
-  createArticle,
-  editArticle,
-  getArticle,
-  unActiveArticle,
-} from "@/services/articles";
-import { getListCategories } from "@/services/categories";
+  createCategory,
+  deleteCategory,
+  editCategory,
+  getCategory,
+  getListCategories,
+} from "@/services/categories";
 
 export const useCategories = (filter: any) => {
   return useQuery({
-    queryKey: ["categories", filter],
+    queryKey: [QueryKeys.CATEGORY, filter],
     queryFn: () => getListCategories(filter),
   });
 };
 
-export const useDetailArticle = (id: string) => {
+export const useDetailCategory = (id: string) => {
   const query = useQuery({
-    queryKey: [QueryKeys.ARTICLES, id],
-    queryFn: async () => await getArticle(id),
+    queryKey: [QueryKeys.CATEGORY, id],
+    queryFn: async () => await getCategory(id),
   });
   return query;
 };
 
-export const useCreateArticle = () => {
+export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
-  const createArticleMutation = useMutation({
-    mutationFn: createArticle,
+  const createCategoryMutation = useMutation({
+    mutationFn: createCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Tạo mới article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.CATEGORY] });
+      message.success("Tạo mới category thành công!");
     },
   });
 
-  return createArticleMutation;
+  return createCategoryMutation;
 };
 
-export const useEditArticle = () => {
+export const useEditCategory = () => {
   const queryClient = useQueryClient();
 
-  const editArticleMutation = useMutation({
-    mutationFn: async (data: IArticle) => await editArticle(data),
+  const editCategoryMutation = useMutation({
+    mutationFn: async (data: ICategory) => await editCategory(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Sửa article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.CATEGORY] });
+      message.success("Sửa category thành công!");
     },
   });
 
-  return editArticleMutation;
+  return editCategoryMutation;
 };
 
-export const useUnActiveArticle = () => {
+export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
 
-  const unActiveArticleMutation = useMutation({
-    mutationFn: async (id: string) => await unActiveArticle(id),
+  const unActiveCategoryMutation = useMutation({
+    mutationFn: async (id: string) => await deleteCategory(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Ẩn article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.CATEGORY] });
+      message.success("Ẩn category thành công!");
     },
   });
 
-  return unActiveArticleMutation;
+  return unActiveCategoryMutation;
 };

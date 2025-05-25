@@ -1,15 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { IArticle } from "@/models";
 import { message } from "antd";
 
 import { QueryKeys } from "@/constants";
-import {
-  createArticle,
-  editArticle,
-  getArticle,
-  unActiveArticle,
-} from "@/services/articles";
+import { createBook, editBook, getBook, unActiveBook } from "@/services/books";
 import { getListBook } from "@/services/books";
 
 export const useBooks = (filter: any) => {
@@ -19,52 +13,52 @@ export const useBooks = (filter: any) => {
   });
 };
 
-export const useDetailArticle = (id: string) => {
+export const useDetailBook = (id: string) => {
   const query = useQuery({
-    queryKey: [QueryKeys.ARTICLES, id],
-    queryFn: async () => await getArticle(id),
+    queryKey: [QueryKeys.BOOKS, id],
+    queryFn: async () => await getBook(id),
   });
   return query;
 };
 
-export const useCreateArticle = () => {
+export const useCreateBook = () => {
   const queryClient = useQueryClient();
 
-  const createArticleMutation = useMutation({
-    mutationFn: createArticle,
+  const createBookMutation = useMutation({
+    mutationFn: createBook,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Tạo mới article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+      message.success("Tạo mới book thành công!");
     },
   });
 
-  return createArticleMutation;
+  return createBookMutation;
 };
 
-export const useEditArticle = () => {
+export const useEditBook = () => {
   const queryClient = useQueryClient();
 
-  const editArticleMutation = useMutation({
-    mutationFn: async (data: IArticle) => await editArticle(data),
+  const editBookMutation = useMutation({
+    mutationFn: async (data: any) => await editBook(data, id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Sửa article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+      message.success("Sửa book thành công!");
     },
   });
 
-  return editArticleMutation;
+  return editBookMutation;
 };
 
-export const useUnActiveArticle = () => {
+export const useUnActiveBook = () => {
   const queryClient = useQueryClient();
 
-  const unActiveArticleMutation = useMutation({
-    mutationFn: async (id: string) => await unActiveArticle(id),
+  const unActiveBookMutation = useMutation({
+    mutationFn: async (id: string) => await unActiveBook(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Ẩn article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.BOOKS] });
+      message.success("Ẩn book thành công!");
     },
   });
 
-  return unActiveArticleMutation;
+  return unActiveBookMutation;
 };

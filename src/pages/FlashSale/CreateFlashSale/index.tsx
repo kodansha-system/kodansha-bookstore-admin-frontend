@@ -136,6 +136,9 @@ const CreateNewFlashSalePage: React.FC = () => {
   const handleAddBooks = () => {
     const listBook = allBooks?.data;
     const uniqueSelectedRowKeys = [...new Set(selectedRowKeys)];
+
+    console.log(listBook, uniqueSelectedRowKeys);
+
     const newItems = listBook
       .filter((book: any) => {
         return (
@@ -153,8 +156,6 @@ const CreateNewFlashSalePage: React.FC = () => {
         quantity: 1,
       }));
 
-    console.log(newItems);
-
     setItems((prev) => [...prev, ...newItems]);
 
     setModalVisible(false);
@@ -166,7 +167,6 @@ const CreateNewFlashSalePage: React.FC = () => {
   };
 
   const createFlashSale = useCreateFlashSale();
-
   const handleCreateFlashSale = async () => {
     try {
       const values = await form.validateFields();
@@ -236,7 +236,7 @@ const CreateNewFlashSalePage: React.FC = () => {
       <Table
         dataSource={items}
         columns={itemColumns}
-        rowKey="key"
+        rowKey="id"
         pagination={false}
         bordered
       />
@@ -281,11 +281,12 @@ const CreateNewFlashSalePage: React.FC = () => {
         </div>
         <TableCommon
           loading={isFetching}
-          rowKey="id"
+          rowKey="_id"
           rowSelection={{
             selectedRowKeys,
             preserveSelectedRowKeys: true,
             onChange: (newSelectedRowKeys: React.Key[]) => {
+              console.log(newSelectedRowKeys, "check selected");
               setSelectedRowKeys(newSelectedRowKeys);
             },
           }}

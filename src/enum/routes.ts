@@ -15,4 +15,10 @@ export enum RoutePath {
   ORDERS = "/orders",
   FLASH_SALES = "/flash_sales",
   STATISTICS = "/statistics",
+  BOOKS = "/books",
+  CATEGORIES = "/categories",
+  VOUCHERS = "/vouchers",
+  SHOPS = "/shops",
+  SHOP_BOOKS = "/shop_books",
+  STAFFS = "/staffs",
 }
