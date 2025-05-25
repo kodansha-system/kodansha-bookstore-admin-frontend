@@ -21,6 +21,7 @@ import Books from "./pages/Books";
 import Categories from "./pages/Categories";
 import Vouchers from "./pages/Vouchers";
 import Shops from "./pages/Shops";
+import EditShopBooksPage from "./pages/ShopBooks/components/EditShopBooks";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -101,8 +102,8 @@ const router = createBrowserRouter([
         element: <Shops />,
       },
       {
-        path: RoutePath.SHOP_BOOKS,
-        element: <Vouchers />,
+        path: `${RoutePath.SHOPS}/:id`,
+        element: <EditShopBooksPage />,
       },
       {
         path: RoutePath.STAFFS,

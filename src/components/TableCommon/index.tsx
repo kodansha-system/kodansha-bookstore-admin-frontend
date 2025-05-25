@@ -14,12 +14,7 @@ const StyledTable = styled.div`
 const TableCommon = (props: TableProps) => {
   return (
     <StyledTable>
-      <Table
-        bordered
-        className="w-full"
-        scroll={{ x: 800, y: 450 }}
-        {...props}
-      />
+      <Table bordered className="w-full" scroll={{ x: 800 }} {...props} />
     </StyledTable>
   );
 };

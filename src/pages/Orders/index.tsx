@@ -1,11 +1,9 @@
-import { Button, Popover } from "antd";
+import { Button } from "antd";
 import Header from "@/components/Header";
-import AddButton from "@/components/AddButton";
 import { useState } from "react";
 import { IOrder } from "@/models";
-import EditButton from "@/components/EditButton";
 import TableCommon from "@/components/TableCommon";
-import { useOrders, useUnActiveOrder } from "@/hooks/orders";
+import { useOrders } from "@/hooks/orders";
 import { OrderStatus, OrderStatusText } from "@/utils/common";
 import { useNavigate } from "react-router-dom";
 import UpdateOrderStatusModal from "./components/UpdateOrderStatus";
@@ -17,7 +15,6 @@ const Orders = () => {
     pageSize: 10,
   });
   const { data, isSuccess, isLoading, refetch } = useOrders(filter);
-  const unActiveOrder = useUnActiveOrder();
   const navigate = useNavigate();
 
   const columnsOrder: any = [
@@ -25,7 +22,7 @@ const Orders = () => {
       title: "Ngày tạo",
       dataIndex: "created_at",
       key: "created_at",
-      width: 200,
+      width: 180,
       ellipsis: true,
       align: "left",
       render: (text: string) => {
@@ -36,7 +33,7 @@ const Orders = () => {
       title: "Người đặt hàng",
       dataIndex: "user_id",
       key: "user_id",
-      width: "300px",
+      width: 250,
       ellipsis: true,
       align: "left",
       render: (text: any) => {
@@ -70,7 +67,7 @@ const Orders = () => {
       title: "Tổng tiền",
       dataIndex: "total_price",
       key: "total_price",
-      width: 200,
+      width: 180,
       render: (text: number) => {
         return <div>{text.toLocaleString()}đ</div>;
       },
@@ -104,10 +101,6 @@ const Orders = () => {
 
   const handleEditOrder = (id: string) => {
     navigate(`/orders/${id}`);
-  };
-
-  const handleHideOrder = (id: string) => {
-    unActiveOrder.mutateAsync(id);
   };
 
   return (

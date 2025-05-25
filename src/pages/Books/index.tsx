@@ -29,7 +29,7 @@ const Books = () => {
       title: "Tên sách",
       dataIndex: "name",
       key: "name",
-      width: "20%",
+      width: "30%",
       ellipsis: true,
       align: "left",
     },
@@ -37,13 +37,12 @@ const Books = () => {
       title: "Giá",
       dataIndex: "price",
       key: "price",
-      width: "20%",
+      width: "15%",
       ellipsis: true,
-      align: "left",
       render: (text: any) => {
         return (
           <div>
-            <div>{text?.toLocaleString()}đ</div>
+            <div>{text?.toLocaleString()} đ</div>
           </div>
         );
       },
@@ -70,7 +69,6 @@ const Books = () => {
           </div>
         );
       },
-      align: "left",
     },
     {
       title: "Hành động",

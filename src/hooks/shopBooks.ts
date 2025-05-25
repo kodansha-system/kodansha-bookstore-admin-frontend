@@ -1,70 +1,68 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { IArticle } from "@/models";
 import { message } from "antd";
 
 import { QueryKeys } from "@/constants";
 import {
-  createArticle,
-  editArticle,
-  getArticle,
-  getListArticle,
-  unActiveArticle,
-} from "@/services/articles";
+  createShopBook,
+  editShopBook,
+  getListShopBook,
+  getShopBook,
+  unActiveShopBook,
+} from "@/services/shopBooks";
 
-export const useArticles = (filter: any) => {
+export const useShopBooks = (filter: any) => {
   return useQuery({
-    queryKey: [QueryKeys.ARTICLES, filter],
-    queryFn: () => getListArticle(filter),
+    queryKey: [QueryKeys.SHOP_BOOKS, filter],
+    queryFn: () => getListShopBook(filter),
   });
 };
 
-export const useDetailArticle = (id: string) => {
+export const useDetailShopBooks = (id: string) => {
   const query = useQuery({
-    queryKey: [QueryKeys.ARTICLES, id],
-    queryFn: async () => await getArticle(id),
+    queryKey: [QueryKeys.SHOP_BOOKS, id],
+    queryFn: async () => await getShopBook(id),
   });
   return query;
 };
 
-export const useCreateArticle = () => {
+export const useCreateShopBooks = () => {
   const queryClient = useQueryClient();
 
-  const createArticleMutation = useMutation({
-    mutationFn: createArticle,
+  const createShopBooksMutation = useMutation({
+    mutationFn: createShopBook,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Tạo mới article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.SHOP_BOOKS] });
+      message.success("Tạo mới shopBooks thành công!");
     },
   });
 
-  return createArticleMutation;
+  return createShopBooksMutation;
 };
 
-export const useEditArticle = () => {
+export const useEditShopBooks = () => {
   const queryClient = useQueryClient();
 
-  const editArticleMutation = useMutation({
-    mutationFn: async (data: IArticle) => await editArticle(data),
+  const editShopBooksMutation = useMutation({
+    mutationFn: async (data: any) => await editShopBook(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Sửa article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.SHOP_BOOKS] });
+      message.success("Sửa shopBooks thành công!");
     },
   });
 
-  return editArticleMutation;
+  return editShopBooksMutation;
 };
 
-export const useUnActiveArticle = () => {
+export const useUnActiveShopBooks = () => {
   const queryClient = useQueryClient();
 
-  const unActiveArticleMutation = useMutation({
-    mutationFn: async (id: string) => await unActiveArticle(id),
+  const unActiveShopBooksMutation = useMutation({
+    mutationFn: async (id: string) => await unActiveShopBook(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Ẩn article thành công!");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.SHOP_BOOKS] });
+      message.success("Ẩn shopBooks thành công!");
     },
   });
 
-  return unActiveArticleMutation;
+  return unActiveShopBooksMutation;
 };

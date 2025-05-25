@@ -1,4 +1,4 @@
-import { Input, Popover } from "antd";
+import { Button, Input, Popover } from "antd";
 import Header from "@/components/Header";
 import AddButton from "@/components/AddButton";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import TableCommon from "@/components/TableCommon";
 import dayjs from "dayjs";
 import { useShops, useUnActiveShop } from "@/hooks/shops";
 import ShopController from "./components/ShopController";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Shops = () => {
   const [filter, setFilter] = useState({
@@ -23,8 +24,7 @@ const Shops = () => {
   const [id, setId] = useState<string>();
   const unActiveShop = useUnActiveShop();
   const queryClient = useQueryClient();
-
-  console.log(data);
+  const navigate = useNavigate();
 
   const columnsShop: any = [
     {
@@ -43,7 +43,7 @@ const Shops = () => {
       title: "Địa chỉ",
       dataIndex: "address",
       key: "address",
-      width: "10%",
+      width: "30%",
       ellipsis: true,
       align: "left",
     },
@@ -51,23 +51,30 @@ const Shops = () => {
       title: "Số điện thoại",
       dataIndex: "phone",
       key: "phone",
-      width: "20%",
+      width: "12%",
     },
     {
       title: "Giờ mở cửa",
       dataIndex: "working_time",
       key: "working_time",
-      width: "20%",
+      width: "12%",
     },
     {
       title: "Hành động",
       dataIndex: "action",
       key: "action",
-      width: "20%",
+      width: 300,
       render: (_: unknown, data: IShop) => {
         return (
           <div className="flex gap-x-3 justify-center">
             <EditButton onClick={() => handleEditShop(data?.id)} />
+            <Button
+              onClick={() => {
+                navigate(`/shops/${data?.id}`);
+              }}
+            >
+              Quản lý số lượng sách
+            </Button>
             <Popover
               placement="top"
               title={"Xác nhận"}
@@ -120,7 +127,7 @@ const Shops = () => {
       </Header>
 
       <Input.Search
-        placeholder="Tìm kiếm shop"
+        placeholder="Nhập địa chỉ cửa hàng"
         allowClear
         onSearch={(value) => {
           setFilter((prev) => ({

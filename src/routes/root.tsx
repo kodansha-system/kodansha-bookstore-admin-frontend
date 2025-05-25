@@ -84,11 +84,6 @@ const items: MenuItem[] = [
     <ShopOutlined className="size-[20px]" />
   ),
   getItem(
-    "Quản lý sách tại cửa hàng",
-    "/shop-books",
-    <BookOutlined className="size-[20px]" />
-  ),
-  getItem(
     "Quản lý nhân viên",
     "/staffs",
     <UserOutlined className="size-[20px]" />

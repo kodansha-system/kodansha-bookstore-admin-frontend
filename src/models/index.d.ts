@@ -233,3 +233,7 @@ export interface IStaff {
   id: string;
   name: string;
 }
+
+export interface IShopBook {
+  id: string;
+}

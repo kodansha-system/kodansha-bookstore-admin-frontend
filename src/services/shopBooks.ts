@@ -1,48 +1,32 @@
 import { ApiPath } from "../enum/api";
-import { IArticle } from "../models";
+import { IShopBook } from "../models";
 import instance from "./apiRequest";
 
-export const getListArticle = async (params: any) => {
-  return await instance.get(`/articles`, {
-    params,
-  });
+export const getListShopBook = async (params: any) => {
+  return await instance.get(`${ApiPath.SHOP_BOOKS}/shop/${params?.shop_id}`);
 };
 
-export const getArticle = async (id: string) => {
-  return await instance.get(`${ApiPath.ARTICLES}/${id}`);
+export const getShopBook = async (id: string) => {
+  return await instance.get(`${ApiPath.SHOP_BOOKS}/${id}`);
 };
 
-export const createArticle = async (data: IArticle) => {
-  const formData = new FormData();
-  formData.append("image", data.image as File);
-  formData.append("title", data.title);
-  formData.append("content", data.content);
-
+export const createShopBook = async (data: IShopBook) => {
   const response = await instance.post(
-    `${import.meta.env.VITE_BACKEND_URL}${ApiPath.ARTICLES}`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    `${import.meta.env.VITE_BACKEND_URL}${ApiPath.SHOP_BOOKS}`,
+    data
   );
   return response.data;
 };
 
-export const editArticle = async (data: IArticle) => {
+export const editShopBook = async (data: any) => {
   const response = await instance.patch(
-    `${import.meta.env.VITE_BACKEND_URL}${ApiPath.ARTICLES}/${data.id}`,
-    data,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    `${import.meta.env.VITE_BACKEND_URL}${ApiPath.SHOP_BOOKS}/${data?.shop_id}`,
+    { data: data?.books }
   );
+  console.log(response.data);
   return response.data;
 };
 
-export const unActiveArticle = async (id: string) => {
-  return await instance.delete(`${ApiPath.ARTICLES}/${id}`);
+export const unActiveShopBook = async (id: string) => {
+  return await instance.delete(`${ApiPath.SHOP_BOOKS}/${id}`);
 };

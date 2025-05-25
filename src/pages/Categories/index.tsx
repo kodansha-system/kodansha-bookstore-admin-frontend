@@ -34,7 +34,7 @@ const Categories = () => {
       width: "20%",
       ellipsis: true,
       align: "left",
-      render: (text: any) => <div>{dayjs(text)?.format("DD / MM / YYYY")}</div>,
+      render: (text: any) => <div>{dayjs(text)?.format("DD/MM/YYYY")}</div>,
     },
     {
       title: "Tên danh mục",

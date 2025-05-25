@@ -9,6 +9,8 @@ import EditButton from "@/components/EditButton";
 import TableCommon from "@/components/TableCommon";
 import { useArticles, useUnActiveArticle } from "@/hooks/articles";
 import ArticleController from "./components/ArticleController";
+import { render } from "react-dom";
+import dayjs from "dayjs";
 
 const Articles = () => {
   const [filter, setFilter] = useState({
@@ -31,12 +33,15 @@ const Articles = () => {
       width: "20%",
       ellipsis: true,
       align: "left",
+      render: (text: any) => {
+        return <div>{dayjs(text)?.format("DD/MM/YYYY HH:mm:ss")}</div>;
+      },
     },
     {
       title: "Tên bài viết",
       dataIndex: "title",
       key: "title",
-      width: "20%",
+      width: "30%",
       ellipsis: true,
       align: "left",
     },
