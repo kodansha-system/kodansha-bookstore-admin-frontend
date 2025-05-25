@@ -15,6 +15,7 @@ import {
   ShoppingCartOutlined,
   StarOutlined,
   ThunderboltOutlined,
+  UsergroupAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 
@@ -61,6 +62,11 @@ const items: MenuItem[] = [
     "Quản lý danh mục sách",
     "/categories",
     <AppstoreOutlined className="size-[20px]" />
+  ),
+  getItem(
+    "Quản lý tác giả",
+    "/authors",
+    <UsergroupAddOutlined className="size-[20px]" />
   ),
   getItem("Quản lý sách", "/books", <BookOutlined className="size-[20px]" />),
   getItem(

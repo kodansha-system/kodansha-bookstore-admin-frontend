@@ -15,8 +15,7 @@ export const getCategory = async (id: string) => {
 export const createCategory = async (data: ICategory) => {
   const formData = new FormData();
   formData.append("image", data.image as File);
-  formData.append("title", data.title);
-  formData.append("content", data.content);
+  formData.append("name", data.name);
 
   const response = await instance.post(
     `${import.meta.env.VITE_BACKEND_URL}${ApiPath.CATEGORIES}`,

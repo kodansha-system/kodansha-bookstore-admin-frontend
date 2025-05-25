@@ -19,4 +19,5 @@ export enum ApiPath {
   DISTRICTS = "/districts",
   WARDS = "/wards",
   STAFFS = "/staffs",
+  AUTHORS = "/authors",
 }

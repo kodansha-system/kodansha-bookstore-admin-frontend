@@ -240,3 +240,9 @@ export interface IStaff {
 export interface IShopBook {
   id: string;
 }
+
+export interface IAuthor {
+  id: string;
+  name: string;
+  image: File | string;
+}

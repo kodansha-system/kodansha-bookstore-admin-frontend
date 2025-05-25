@@ -21,4 +21,5 @@ export enum RoutePath {
   SHOPS = "/shops",
   SHOP_BOOKS = "/shop_books",
   STAFFS = "/staffs",
+  AUTHORS = "/authors",
 }

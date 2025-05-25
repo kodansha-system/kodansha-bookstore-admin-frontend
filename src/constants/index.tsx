@@ -30,4 +30,5 @@ export const QueryKeys = {
   PROVINCES: "provinces",
   DISTRICTS: "districts",
   WARDS: "wards",
+  AUTHORS: "authors",
 };
