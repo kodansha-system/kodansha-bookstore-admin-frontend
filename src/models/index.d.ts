@@ -231,6 +231,9 @@ export interface IShopBooks {
 
 export interface IStaff {
   id: string;
+  _id: string;
+  name: string;
+  email: string;
   name: string;
 }
 

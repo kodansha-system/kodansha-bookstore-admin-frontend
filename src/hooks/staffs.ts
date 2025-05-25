@@ -1,70 +1,72 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { IArticle } from "@/models";
+import {
+  createStaff,
+  editStaff,
+  getListStaff,
+  getStaff,
+  unActiveStaff,
+} from "../services/staffs";
+import { IStaff } from "../models";
 import { message } from "antd";
 
-import { QueryKeys } from "@/constants";
-import {
-  createArticle,
-  editArticle,
-  getArticle,
-  getListArticle,
-  unActiveArticle,
-} from "@/services/articles";
-
-export const useArticles = (filter: any) => {
-  return useQuery({
-    queryKey: [QueryKeys.ARTICLES, filter],
-    queryFn: () => getListArticle(filter),
-  });
-};
-
-export const useDetailArticle = (id: string) => {
+export const useStaffs = (filter: any) => {
   const query = useQuery({
-    queryKey: [QueryKeys.ARTICLES, id],
-    queryFn: async () => await getArticle(id),
+    queryKey: ["staffs", filter],
+    queryFn: () => getListStaff(filter),
   });
   return query;
 };
 
-export const useCreateArticle = () => {
-  const queryClient = useQueryClient();
-
-  const createArticleMutation = useMutation({
-    mutationFn: createArticle,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Tạo mới article thành công!");
-    },
+export const useDetailStaff = (id: string) => {
+  const query = useQuery({
+    queryKey: ["staffs", id],
+    queryFn: async () => await getStaff(id),
   });
-
-  return createArticleMutation;
+  return query;
 };
 
-export const useEditArticle = () => {
+export const useCreateStaff = () => {
   const queryClient = useQueryClient();
 
-  const editArticleMutation = useMutation({
-    mutationFn: async (data: IArticle) => await editArticle(data),
+  const createStaffMutation = useMutation({
+    mutationFn: createStaff,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Sửa article thành công!");
+      queryClient.invalidateQueries({ queryKey: ["staffs"] });
+    },
+    onError: (error) => {
+      message.error(error?.message || "Có lỗi xảy ra");
     },
   });
 
-  return editArticleMutation;
+  return createStaffMutation;
 };
 
-export const useUnActiveArticle = () => {
+export const useEditStaff = () => {
   const queryClient = useQueryClient();
 
-  const unActiveArticleMutation = useMutation({
-    mutationFn: async (id: string) => await unActiveArticle(id),
+  const createStaffMutation = useMutation({
+    mutationFn: async (data: IStaff) => await editStaff(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.ARTICLES] });
-      message.success("Ẩn article thành công!");
+      queryClient.invalidateQueries({ queryKey: ["staffs"] });
+    },
+    onError: (error) => {
+      message.error(error?.message || "Có lỗi xảy ra");
     },
   });
 
-  return unActiveArticleMutation;
+  return createStaffMutation;
+};
+
+export const useUnActiveStaff = () => {
+  const queryClient = useQueryClient();
+
+  const unActiveStaffMutation = useMutation({
+    mutationFn: async (id: string) => await unActiveStaff(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["staffs"] });
+      message.success("Khóa tài khoản thành công!");
+    },
+  });
+
+  return unActiveStaffMutation;
 };

@@ -1,63 +1,60 @@
-import { Input, Popover } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Image, Input, Popover } from "antd";
 import Header from "@/components/Header";
 import AddButton from "@/components/AddButton";
+import { useStaffs, useUnActiveStaff } from "@/hooks/staffs";
 import { useState } from "react";
-import { IVoucher } from "@/models";
-import { useQueryClient } from "@tanstack/react-query";
-import DeleteButton from "@/components/DeleteButton";
-import EditButton from "@/components/EditButton";
+import { IStaff } from "@/models";
+import { Action } from "@/enum/actions";
 import TableCommon from "@/components/TableCommon";
-import VoucherController from "./components/VoucherController";
-import { useUnActiveVoucher, useVouchers } from "@/hooks/vouchers";
-import dayjs from "dayjs";
+import EditButton from "@/components/EditButton";
+import DeleteButton from "@/components/DeleteButton";
+import StaffController from "./components/StaffController";
 
-const Vouchers = () => {
+const Staffs = () => {
   const [filter, setFilter] = useState({
+    keyword: undefined,
     current: 1,
     pageSize: 10,
-    keyword: "",
   });
-  const { data, isSuccess, isLoading } = useVouchers(filter);
+  const { data, isSuccess, isLoading } = useStaffs(filter);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [id, setId] = useState<string>();
-  const unActiveVoucher = useUnActiveVoucher();
-  const queryClient = useQueryClient();
+  const unActiveStaff = useUnActiveStaff();
 
-  console.log(data);
-
-  const columnsVoucher: any = [
+  const columnsStaff: any = [
     {
-      title: "Ngày tạo",
-      dataIndex: "created_at",
-      key: "created_at",
-      width: "10%",
-      ellipsis: true,
-      align: "left",
-      render: (text: any) => {
-        console.log(text);
-        return <div>{dayjs(text)?.format("DD/MM/YYYY")}</div>;
-      },
-    },
-    {
-      title: "Tên mã giảm giá",
-      dataIndex: "code",
-      key: "code",
-      width: "10%",
+      title: "Tên staff",
+      dataIndex: "name",
+      key: "name",
+      width: "200px",
       ellipsis: true,
       align: "left",
     },
     {
-      title: "Thời gian áp dụng",
-      dataIndex: "time",
-      key: "time",
-      width: "20%",
-      render: (_: any, data: any) => {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      ellipsis: true,
+      align: "left",
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone_number",
+      key: "phone_number",
+      ellipsis: true,
+      align: "left",
+    },
+    {
+      title: "Ảnh",
+      dataIndex: "image",
+      key: "image",
+      width: "100px",
+      render: (text: string) => {
         return (
-          <div>
-            <div>{`${dayjs(data?.start_time)?.format(
-              "DD/MM/YYYY HH:mm"
-            )} đến ${dayjs(data?.end_time)?.format("DD/MM/YYYY HH:mm")}`}</div>
+          <div className="flex justify-center">
+            {text && <Image src={text} alt="" width={60} height={60} />}
           </div>
         );
       },
@@ -66,20 +63,21 @@ const Vouchers = () => {
       title: "Hành động",
       dataIndex: "action",
       key: "action",
-      width: "20%",
-      render: (_: unknown, data: IVoucher) => {
+      width: "150px",
+      render: (_: unknown, data: IStaff) => {
         return (
-          <div className="flex gap-x-3 justify-center">
-            <EditButton onClick={() => handleEditVoucher(data?.id)} />
+          <div className="flex gap-x-2 justify-center">
+            <EditButton onClick={() => handleEditStaff(data?.id)} />
+
             <Popover
               placement="top"
               title={"Xác nhận"}
               content={
                 <>
-                  <div>Bạn muốn xóa voucher này?</div>
+                  <div>Bạn muốn xóa staff này?</div>
                   <div className="text-right">
                     <button
-                      onClick={() => handleHideVoucher(data?.id)}
+                      onClick={() => handleHideStaff(data?.id)}
                       className="bg-blue-500 text-white py-1 px-2 mt-2 rounded-md"
                     >
                       OK
@@ -96,36 +94,31 @@ const Vouchers = () => {
     },
   ];
 
-  const handleAddNewVoucher = () => {
+  const handleAddNewStaff = () => {
     setIsOpen(true);
   };
 
-  const handleEditVoucher = (id: string) => {
+  const handleEditStaff = (id: string) => {
     setIsOpenEdit(true);
     setId(id);
-    queryClient.invalidateQueries({
-      queryKey: ["subject", id],
-    });
   };
 
-  const handleHideVoucher = (id: string) => {
-    unActiveVoucher.mutateAsync(id);
+  const handleHideStaff = (id: string) => {
+    unActiveStaff.mutateAsync(id);
   };
-
-  console.log(data?.data?.vouchers, "check ");
 
   return (
     <div>
       <Header
-        element={<AddButton onClick={handleAddNewVoucher}>Thêm mới</AddButton>}
+        element={<AddButton onClick={handleAddNewStaff}>Thêm mới</AddButton>}
       >
-        Quản lý mã giảm giá
+        Quản lý nhân viên
       </Header>
 
       <Input.Search
-        placeholder="Tìm kiếm voucher"
+        placeholder="Tìm kiếm nhân viên"
         allowClear
-        onSearch={(value) => {
+        onSearch={(value: any) => {
           setFilter((prev) => ({
             ...prev,
             keyword: value,
@@ -137,9 +130,12 @@ const Vouchers = () => {
       />
 
       <TableCommon
-        columns={columnsVoucher}
-        dataSource={isSuccess ? data?.data?.vouchers : []}
+        columns={columnsStaff}
+        dataSource={isSuccess ? data?.data?.staffs : []}
         loading={isLoading}
+        bordered
+        className="w-full"
+        scroll={{ x: 800 }}
         pagination={{
           showSizeChanger: true,
           total: data?.data?.meta?.totalItems,
@@ -150,10 +146,13 @@ const Vouchers = () => {
           },
         }}
       />
-
-      <VoucherController mode="add" isOpen={isOpen} setIsOpen={setIsOpen} />
-      <VoucherController
-        mode="edit"
+      <StaffController
+        mode={Action.ADD}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+      <StaffController
+        mode={Action.EDIT}
         id={id}
         isOpen={isOpenEdit}
         setIsOpen={setIsOpenEdit}
@@ -162,4 +161,4 @@ const Vouchers = () => {
   );
 };
 
-export default Vouchers;
+export default Staffs;

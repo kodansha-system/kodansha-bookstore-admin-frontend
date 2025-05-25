@@ -65,7 +65,7 @@ export const useUnActiveUser = () => {
     mutationFn: async (id: string) => await unActiveUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      message.success("Khóa tại khoản thành công!");
+      message.success("Khóa tài khoản thành công!");
     },
   });
 

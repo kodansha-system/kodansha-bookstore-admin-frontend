@@ -22,6 +22,7 @@ import Categories from "./pages/Categories";
 import Vouchers from "./pages/Vouchers";
 import Shops from "./pages/Shops";
 import EditShopBooksPage from "./pages/ShopBooks/components/EditShopBooks";
+import Staffs from "./pages/Staffs";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -107,7 +108,7 @@ const router = createBrowserRouter([
       },
       {
         path: RoutePath.STAFFS,
-        element: <Vouchers />,
+        element: <Staffs />,
       },
     ],
   },

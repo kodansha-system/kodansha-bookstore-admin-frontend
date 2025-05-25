@@ -15,8 +15,8 @@ export enum ApiPath {
   VOUCHERS = "/vouchers",
   SHOPS = "/shops",
   SHOP_BOOKS = "/shop-books",
-  STAFF = "/staffs",
   PROVINCES = "/provinces",
   DISTRICTS = "/districts",
   WARDS = "/wards",
+  STAFFS = "/staffs",
 }
