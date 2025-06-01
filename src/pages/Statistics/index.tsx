@@ -110,7 +110,7 @@ export default function StatisticsOverview() {
         <ResponsiveContainer width="100%" height={350}>
           <BarChart data={dataTopBook}>
             <XAxis
-              dataKey="bookName"
+              dataKey="name"
               interval={0}
               tick={({ x, y, payload }) => {
                 const value = payload.value as string;

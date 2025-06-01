@@ -301,46 +301,8 @@ const CreateNewShopBooksPage: React.FC = () => {
               setFilter({ ...filter, page, limit: pageSize });
             },
           }}
-          scroll={{ x: 800, y: 250 }}
+          scroll={{ x: 800, y: 300 }}
         />
-        <div className="flex gap-4 mt-4">
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-x-1">
-              <input
-                type="radio"
-                checked={discountOption === "percent"}
-                onChange={() => setDiscountOption("percent")}
-              />{" "}
-              Giảm giá (%)
-            </label>
-            <InputNumber
-              min={1}
-              max={100}
-              value={discountOption === "percent" ? discountValue : undefined}
-              onChange={(v) => setDiscountValue(v || 0)}
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-x-1">
-              <input
-                type="radio"
-                checked={discountOption === "fixed"}
-                onChange={() => setDiscountOption("fixed")}
-              />
-              Đồng giá
-            </label>
-            <InputNumber
-              min={1000}
-              step={1000}
-              value={discountOption === "fixed" ? discountValue : undefined}
-              onChange={(v) => setDiscountValue(v || 0)}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(value) => parseFloat(value?.replace(/,/g, "") || "0")}
-            />
-          </div>
-        </div>
       </Modal>
     </div>
   );
